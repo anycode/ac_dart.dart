@@ -1,0 +1,67 @@
+name: ac_http_client
+description: AnyCode Flutter HTTP client with cancelable requests
+version: 0.1.0
+homepage: https://github.com/anycode/ac_flutter_framework
+publish_to: 'none'
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  ac_dart:
+    path: ../ac_dart
+  cancellation_token_http: ^1.3.0
+  cross_file: ^0.3.3+5
+  http: ^1.1.0
+  http_extensions: #^1.1.0
+    #path: ../../../../dart/lib/http_extensions/http_extensions
+    git:
+      url: https://github.com/anycode/http_extensions.git
+      path: http_extensions
+      ref: cancelable
+  http_extensions_base_url: #^1.1.0
+    git:
+      url: https://github.com/anycode/http_extensions.git
+      path: http_extensions_base_url
+      ref: cancelable
+  http_extensions_cache: #^1.1.0
+    git:
+      url: https://github.com/anycode/http_extensions.git
+      path: http_extensions_cache
+      ref: cancelable
+  http_extensions_headers: #^1.1.0
+    git:
+      url: https://github.com/anycode/http_extensions.git
+      path: http_extensions_headers
+      ref: cancelable
+  http_extensions_log: #^1.1.0
+    git:
+      url: https://github.com/anycode/http_extensions.git
+      path: http_extensions_log
+      ref: cancelable
+  http_extensions_retry: #^1.0.0
+    git:
+      url: https://github.com/anycode/http_extensions.git
+      path: http_extensions_retry
+      ref: cancelable
+  json_annotation: ^4.8.1
+  mime: ^1.0.2
+  oauth2: #^2.0.1
+    git:
+      url: https://github.com/anycode/oauth2.git
+      ref: cancelable
+
+dev_dependencies:
+  json_serializable: ^6.7.1
+
+dependency_overrides:
+  http_extensions:
+    # use version compatible with sound null safety
+    #path: ../../../dart/lib/http_extensions/http_extensions
+    git:
+      url: https://github.com/anycode/http_extensions.git
+      path: http_extensions
+      ref: cancelable
+
+# For information on the generic Dart part of this file, see the
+# following page: https://dart.dev/tools/pub/pubspec
