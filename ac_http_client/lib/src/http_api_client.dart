@@ -22,7 +22,7 @@ import 'model/multipart.dart';
 typedef UriBuilder = Uri Function({String? url, String? host, int? port, String? path, Map<String, dynamic>? queryParameters});
 typedef ErrorHandler = Response Function(Response error);
 
-class ApiClient {
+class HttpApiClient {
   final BaseClient _client;
   final Uri? baseUri;
   final UriBuilder? uriBuilder;
@@ -31,7 +31,7 @@ class ApiClient {
 
   final cancellationTokens = <String, CancellationToken>{};
 
-  ApiClient({
+  HttpApiClient({
     this.baseUri,
     required BaseClient inner,
     LogOptions? logOptions,
@@ -406,17 +406,17 @@ class ApiClient {
     }
     ApiError error;
     final contentType = ContentType.parse(response.headers['content-type'] ?? '');
-    if (contentType.mimeType == ContentType.json.mimeType) {
+    if ([ContentType.json.mimeType, ContentTypeExt.errorJson.mimeType].contains(contentType.mimeType)) {
       final dynamic err = json.decodeBytes(response.bodyBytes);
       if (err is Map) {
         error = ApiError.fromJson(err as Map<String, dynamic>);
       } else {
-        error = ApiError(status: response.statusCode, error: err.toString());
+        error = ApiError(status: response.statusCode, error: err.toString(), headers: response.headers);
       }
     } else if ([ContentType.html.mimeType, ContentType.text.mimeType].contains(contentType.mimeType)) {
-      error = ApiError(status: response.statusCode, error: response.bodyBytes.toString());
+      error = ApiError(status: response.statusCode, error: response.bodyBytes.toString(), headers: response.headers);
     } else {
-      error = ApiError(status: response.statusCode, error: 'Unknown error');
+      error = ApiError(status: response.statusCode, error: 'Unknown error', headers: response.headers);
     }
     throw ApiException(response.statusCode, response.reasonPhrase, error);
   }
