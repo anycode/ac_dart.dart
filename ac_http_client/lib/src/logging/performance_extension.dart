@@ -11,9 +11,9 @@ class PerformanceExtension extends Extension<LogOptions> {
 
   PerformanceExtension({LogOptions defaultOptions = const LogOptions(), this.logger}) : super(defaultOptions: defaultOptions);
 
-  void log(String message, LogOptions options) {
+  void log(String message, LogOptions options, {Level? level}) {
     if (logger != null) {
-      logger!.log(options.level, message);
+      logger!.log(level ?? options.level, message);
     } else {
       dev.log(message, level: Level.FINER.value);
     }
@@ -22,7 +22,7 @@ class PerformanceExtension extends Extension<LogOptions> {
   int _id = 0;
   HashMap<int, int> requestTimestamps = HashMap();
 
-  Future<String> _formatPerformance(int id, http.StreamedResponse response, LogOptions options) async {
+  String _formatPerformance(int id, http.StreamedResponse response) {
     final requestLog = StringBuffer();
 
     var requestTimestamp = requestTimestamps[id];
@@ -40,7 +40,7 @@ class PerformanceExtension extends Extension<LogOptions> {
     return requestLog.toString();
   }
 
-  String _formatError(int id, http.BaseRequest request, dynamic error, StackTrace stackTrace, LogOptions options) {
+  String _formatError(int id, http.BaseRequest request, dynamic error, StackTrace stackTrace) {
     final errorLog = StringBuffer();
 
     var requestTimestamp = requestTimestamps[id];
@@ -73,19 +73,20 @@ class PerformanceExtension extends Extension<LogOptions> {
     requestTimestamps[id] = DateTime.now().millisecondsSinceEpoch;
 
     try {
+      log('Performance report start REQ($id) [ ${request.method} | ${request.url}]', options);
       var response = await super.sendWithOptions(request, options);
 
       if (options.logResponseContent) {
         response = BufferedStreamResponse(response);
       }
 
-      final responseLog = await _formatPerformance(id, response, options);
-      log(responseLog, options);
+      log('Performance report end REQ($id) [ ${request.method} | ${request.url}]', options);
+      log(_formatPerformance(id, response), options);
 
       return response;
     } catch (error, stacktrace) {
-      final errorLog = _formatError(id, request, error, stacktrace, options);
-      log(errorLog, options);
+      log('Performance report end REQ($id) [ ${request.method} | ${request.url}]', options);
+      log(_formatError(id, request, error, stacktrace), options, level: Level.SEVERE);
       rethrow;
     }
   }
