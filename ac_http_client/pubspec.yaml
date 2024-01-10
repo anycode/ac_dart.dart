@@ -61,6 +61,7 @@ dependency_overrides:
       url: https://github.com/anycode/http_extensions.git
       path: http_extensions
       ref: cancelable
+  meta: 1.10.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
