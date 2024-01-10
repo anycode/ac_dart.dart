@@ -30,6 +30,7 @@
 import 'dart:io';
 
 extension ContentTypeExt on ContentType {
+  static final errorJson = ContentType('application', 'error+json', charset: 'utf-8');
   static final csv = ContentType('text', 'csv', charset: 'utf-8');
   static final pdf = ContentType('application', 'pdf');
   static final zip = ContentType('application', 'zip');
