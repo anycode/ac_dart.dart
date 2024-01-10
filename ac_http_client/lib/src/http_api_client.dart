@@ -23,7 +23,7 @@ typedef UriBuilder = Uri Function({String? url, String? host, int? port, String?
 typedef ErrorHandler = Response Function(Response error);
 
 class HttpApiClient {
-  final BaseClient _client;
+  final Client _client;
   final Uri? baseUri;
   final UriBuilder? uriBuilder;
   final ErrorHandler? errorHandler;
