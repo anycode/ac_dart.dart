@@ -1,8 +1,6 @@
 import 'package:ac_dart/src/format/format_latlng.dart';
 import 'package:latlong2/latlong.dart';
 
-import '../utils/format.dart';
-
 extension LatLngExt on LatLng {
 
   /// Parse [String] input into [gm.LatLng] object
