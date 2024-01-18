@@ -3,16 +3,25 @@ import 'package:logging/logging.dart' as lgg;
 
 /// Debugging logger which logs events to console and multiple files (rotated)
 class AcLogger extends Logger {
+  /// All attached [Logger]s in the system.
+  static final _loggers = <String, AcLogger>{};
+
   /// Name of the logger
   final String name;
+
   /// Minimal level for logging
   final Level? level;
   lgg.Logger? _loggingLogger;
 
-  AcLogger({
+  static singleton<T extends AcLogger>(String name, T Function() logger) => _loggers.putIfAbsent(name, logger);
+
+  factory AcLogger({required String name, Level? level, LogOutput? output, LogFilter? filter, LogPrinter? printer}) =>
+      singleton(name, () => AcLogger.instantiate(name: name, level: level, output: output, filter: filter, printer: printer));
+
+  AcLogger.instantiate({
     required this.name,
-    super.output,
     this.level,
+    super.output,
     super.filter,
     super.printer,
   }) : super(level: level);
@@ -37,7 +46,7 @@ class AcLogger extends Logger {
   /// logging logger and logs the events to self.
   set loggingLogger(lgg.Logger logger) {
     lgg.hierarchicalLoggingEnabled = true;
-    _loggingLogger = loggingLogger;
+    _loggingLogger = logger;
     _loggingLogger!.level = _invertLevel(level);
     // For some reason, all loggers leak into the listener, therefore we filter it once more nby name
     _loggingLogger!.onRecord

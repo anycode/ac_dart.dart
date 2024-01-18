@@ -12,16 +12,26 @@ import 'ac_logger.dart';
 class DebugLogger extends AcLogger {
   /// [MultiFileOutput] output
   final MultiFileOutput? _output;
+
   MultiFileOutput? get output => _output;
 
-  DebugLogger({
+  factory DebugLogger({
+    required String name,
+    Level? level,
+    MultiFileOutput? output,
+    LogFilter? filter,
+    LogPrinter? printer,
+  }) =>
+      AcLogger.singleton(name, () => DebugLogger.instantiate(name: name, level: level, output: output, filter: filter, printer: printer));
+
+  DebugLogger.instantiate({
     required super.name,
     super.level,
     MultiFileOutput? output,
     LogFilter? filter,
     LogPrinter? printer,
-  }) : _output = output,
-        super(
+  })  : _output = output,
+        super.instantiate(
           output: MultiOutput([output, ConsoleOutput()]),
           filter: filter ?? DevelopmentFilter(),
           printer: printer ?? DebugPrinter(),
@@ -37,7 +47,8 @@ class DebugPrinter extends LogPrinter {
     return [
       ...stringifyMessage(event.message).split('\n').map((line) => '$recId | ${event.time} | ${event.level.name} | $line'),
       if (event.error != null) '$recId | ${event.time} | ${event.level.name} | error:\n',
-      if (event.error != null) ...event.error.toString().split('\n').map((line) => '$recId | ${event.time} | ${event.level.name} |   $line\n'),
+      if (event.error != null)
+        ...event.error.toString().split('\n').map((line) => '$recId | ${event.time} | ${event.level.name} |   $line\n'),
       if (event.stackTrace != null) '$recId | ${event.time} | ${event.level.name} | stack trace: \n',
       if (event.stackTrace != null)
         ...event.stackTrace.toString().split('\n').map((line) => '$recId | ${event.time} | ${event.level.name} |   $line\n'),
@@ -93,11 +104,12 @@ class MultiFileOutput extends FileOutput {
   }
 
   List<File> get files => _files;
+
   List<XFile> get xFiles => _files.map((f) => XFile(f.path)).toList();
 
   void clearLog() {
-    for(final file in _files) {
-      if(file.existsSync() == true) {
+    for (final file in _files) {
+      if (file.existsSync() == true) {
         file.deleteSync();
       }
     }
