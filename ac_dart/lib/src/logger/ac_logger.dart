@@ -15,8 +15,15 @@ class AcLogger extends Logger {
 
   static singleton<T extends AcLogger>(String name, T Function() logger) => _loggers.putIfAbsent(name, logger);
 
-  factory AcLogger({required String name, Level? level, LogOutput? output, LogFilter? filter, LogPrinter? printer}) =>
-      singleton(name, () => AcLogger.instantiate(name: name, level: level, output: output, filter: filter, printer: printer));
+  factory AcLogger({required String name, Level? level, LogOutput? output, LogFilter? filter, LogPrinter? printer}) => singleton(
+      name,
+      () => AcLogger.instantiate(
+            name: name,
+            level: level,
+            output: output,
+            filter: filter,
+            printer: printer ?? PrettyPrinter(stackTraceBeginIndex: 1, methodCount: 3, errorMethodCount: 10),
+          ));
 
   AcLogger.instantiate({
     required this.name,
