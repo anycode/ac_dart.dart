@@ -1,3 +1,4 @@
+import 'package:ac_dart/src/extensions/datetime_ext.dart';
 import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -42,7 +43,7 @@ class DateTimeConverter implements JsonConverter<DateTime, Object> {
     } else if (dateTime == maxDateTime) {
       return 'infinity';
     } else {
-      return dateTime.toIso8601String();
+      return dateTime.toUtc().toIso8601StringTZD();
     }
   }
 }
