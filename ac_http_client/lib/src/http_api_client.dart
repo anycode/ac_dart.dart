@@ -27,6 +27,7 @@ class HttpApiClient {
   final Uri? baseUri;
   final UriBuilder? uriBuilder;
   final ErrorHandler? errorHandler;
+  final Logger? errorLogger;
   final Duration? defaultTimeout;
 
   final cancellationTokens = <String, CancellationToken>{};
@@ -43,10 +44,12 @@ class HttpApiClient {
     Logger? headerLogger,
     Logger? performanceLogger,
     Logger? httpLogger,
+    Logger? errorLogger,
     this.uriBuilder,
     this.errorHandler,
     this.defaultTimeout = const Duration(minutes: 5),
-  }) : _client = ExtendedClient(
+  })  : errorLogger = errorLogger ?? logger ?? Logger('Error'),
+        _client = ExtendedClient(
           inner: inner,
           extensions: [
             if (baseUri != null)
@@ -305,7 +308,12 @@ class HttpApiClient {
       } else if (body is List) {
         request.bodyBytes = body.cast<int>();
       } else if (body is Map) {
-        request.bodyFields = body.cast<String, String>();
+        if (request.headers.containsKey('content-type') &&
+            [ContentType.json.value, ContentTypeExt.errorJson.value].contains(request.headers['content-type'])) {
+          request.body = json.encode(body);
+        } else {
+          request.bodyFields = body.cast<String, String>();
+        }
       } else {
         throw ArgumentError('Invalid request body "$body".');
       }
@@ -401,7 +409,7 @@ class HttpApiClient {
     if (response.statusCode >= 200 && response.statusCode <= 299) {
       return response;
     }
-    if(errorHandler != null) {
+    if (errorHandler != null) {
       return errorHandler!.call(response);
     }
     ApiError error;
@@ -418,7 +426,9 @@ class HttpApiClient {
     } else {
       error = ApiError(status: response.statusCode, error: 'Unknown error', headers: response.headers);
     }
-    throw ApiException(response.statusCode, response.reasonPhrase, error);
+    final exception = ApiException(response.statusCode, response.reasonPhrase, error);
+    errorLogger?.severe(exception, error, StackTrace.current);
+    throw exception;
   }
 }
 
