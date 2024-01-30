@@ -12,6 +12,7 @@ import 'package:http_extensions_log/http_extensions_log.dart';
 import 'package:http_extensions_retry/http_extensions_retry.dart';
 import 'package:logging/logging.dart';
 
+import 'ac_api_client.dart';
 import 'logging/nobinary_log_extension.dart';
 import 'logging/performance_extension.dart';
 import 'model/api_error.dart';
@@ -19,13 +20,8 @@ import 'model/api_exception.dart';
 import 'model/media.dart';
 import 'model/multipart.dart';
 
-typedef UriBuilder = Uri Function({String? url, String? host, int? port, String? path, Map<String, dynamic>? queryParameters});
-typedef ErrorHandler = Response Function(Response error);
-
-class HttpApiClient {
+class HttpApiClient extends AcApiClient {
   final Client _client;
-  final Uri? baseUri;
-  final UriBuilder? uriBuilder;
   final ErrorHandler? errorHandler;
   final Logger? errorLogger;
   final Duration? defaultTimeout;
@@ -33,7 +29,7 @@ class HttpApiClient {
   final cancellationTokens = <String, CancellationToken>{};
 
   HttpApiClient({
-    this.baseUri,
+    super.baseUri,
     required BaseClient inner,
     LogOptions? logOptions,
     HeadersOptions? headersOptions,
@@ -45,7 +41,7 @@ class HttpApiClient {
     Logger? performanceLogger,
     Logger? httpLogger,
     Logger? errorLogger,
-    this.uriBuilder,
+    super.uriBuilder,
     this.errorHandler,
     this.defaultTimeout = const Duration(minutes: 5),
   })  : errorLogger = errorLogger ?? logger ?? Logger('Error'),
@@ -102,7 +98,7 @@ class HttpApiClient {
   }) {
     return _sendUnstreamed(
       'GET',
-      _uriBuilder(url: url, host: host, path: path, queryParameters: queryParameters),
+      uriBuilder(url: url, host: host, path: path, queryParameters: queryParameters),
       headers: headers,
       timeout: timeout,
       cancelRunning: cancelRunning,
@@ -122,7 +118,7 @@ class HttpApiClient {
   }) {
     return _sendUnstreamed(
       'POST',
-      _uriBuilder(url: url, host: host, path: path, queryParameters: queryParameters),
+      uriBuilder(url: url, host: host, path: path, queryParameters: queryParameters),
       body: body,
       encoding: encoding,
       headers: headers,
@@ -143,7 +139,7 @@ class HttpApiClient {
   }) {
     return _sendMultipart(
       'POST',
-      _uriBuilder(url: url, host: host, path: path, queryParameters: queryParameters),
+      uriBuilder(url: url, host: host, path: path, queryParameters: queryParameters),
       fields: fields,
       headers: headers,
       timeout: timeout,
@@ -164,7 +160,7 @@ class HttpApiClient {
   }) {
     return _sendUnstreamed(
       'PUT',
-      _uriBuilder(url: url, host: host, path: path, queryParameters: queryParameters),
+      uriBuilder(url: url, host: host, path: path, queryParameters: queryParameters),
       body: body,
       encoding: encoding,
       headers: headers,
@@ -185,7 +181,7 @@ class HttpApiClient {
   }) {
     return _sendMultipart(
       'PUT',
-      _uriBuilder(url: url, host: host, path: path, queryParameters: queryParameters),
+      uriBuilder(url: url, host: host, path: path, queryParameters: queryParameters),
       fields: fields,
       headers: headers,
       timeout: timeout,
@@ -206,7 +202,7 @@ class HttpApiClient {
   }) {
     return _sendUnstreamed(
       'PATCH',
-      _uriBuilder(url: url, host: host, path: path, queryParameters: queryParameters),
+      uriBuilder(url: url, host: host, path: path, queryParameters: queryParameters),
       body: body,
       encoding: encoding,
       headers: headers,
@@ -227,7 +223,7 @@ class HttpApiClient {
   }) async {
     return _sendMultipart(
       'PATCH',
-      _uriBuilder(url: url, host: host, path: path, queryParameters: queryParameters),
+      uriBuilder(url: url, host: host, path: path, queryParameters: queryParameters),
       fields: fields,
       headers: headers,
       timeout: timeout,
@@ -249,7 +245,7 @@ class HttpApiClient {
   }) {
     return _sendUnstreamed(
       'DELETE',
-      _uriBuilder(url: url, host: host, path: path, queryParameters: queryParameters),
+      uriBuilder(url: url, host: host, path: path, queryParameters: queryParameters),
       body: body,
       encoding: encoding,
       headers: headers,
@@ -271,7 +267,7 @@ class HttpApiClient {
   }) {
     return _sendUnstreamed(
       'EXEC',
-      _uriBuilder(url: url, host: host, path: path, queryParameters: queryParameters),
+      uriBuilder(url: url, host: host, path: path, queryParameters: queryParameters),
       body: body,
       encoding: encoding,
       headers: headers,
@@ -379,31 +375,6 @@ class HttpApiClient {
       rethrow;
     }
   }
-
-  UriBuilder get _uriBuilder =>
-      uriBuilder ??
-      ({String? url, String? host, int? port, String? path, Map<String, dynamic>? queryParameters}) {
-        final Uri uri;
-        if (url != null) {
-          if (url.startsWith('http://') || url.startsWith('https://')) {
-            // full URL
-            uri = Uri.parse(url);
-          } else if (url.startsWith('/')) {
-            // absolute path starting with '/'
-            uri = baseUri!.replace(path: url, queryParameters: queryParameters);
-          } else {
-            // relative path, append to base
-            final path = '${baseUri!.path}/$url';
-            uri = baseUri!.replace(path: path, queryParameters: queryParameters);
-          }
-        } else {
-          if (path?.startsWith('/') == false) {
-            path = '${baseUri!.path}/$path';
-          }
-          uri = baseUri!.replace(host: host, path: path, port: port);
-        }
-        return uri.replace(queryParameters: queryParameters);
-      };
 
   Response _throwIfError(Response response) {
     if (response.statusCode >= 200 && response.statusCode <= 299) {

@@ -10,8 +10,8 @@ environment:
 dependencies:
   ac_dart:
     path: ../ac_dart
+  cancellation_token_http: ^2.0.0
   cross_file: ^0.3.3+8
-  http: ^1.1.2
   http_extensions: #^1.1.0
     #path: ../../../../dart/lib/http_extensions/http_extensions
     git:
