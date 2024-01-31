@@ -2,6 +2,7 @@ name: ac_dart
 description: AnyCode Dart services and extensions
 version: 0.1.2
 homepage: https://github.com/anycode/dart_lib
+repository: https://github.com/anycode/dart_lib/ac_dart
 publish_to: 'none'
 
 environment:

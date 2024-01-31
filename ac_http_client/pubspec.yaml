@@ -1,7 +1,8 @@
 name: ac_http_client
 description: AnyCode Flutter HTTP client with cancelable requests
-version: 0.1.1
-homepage: https://github.com/anycode/ac_flutter_framework
+version: 0.1.2
+homepage: https://github.com/anycode/dart_lib
+repository: https://github.com/anycode/dart_lib/ac_http_client
 publish_to: 'none'
 
 environment:
@@ -9,7 +10,11 @@ environment:
 
 dependencies:
   ac_dart:
-    path: ../ac_dart
+    git:
+      url: https://github.com/anycode/dart_lib.git
+      path: ac_dart
+      ref: v0.1.2
+    #path: ../ac_dart
   cancellation_token_http: ^2.0.0
   cross_file: ^0.3.3+8
   http_extensions: #^1.1.0
