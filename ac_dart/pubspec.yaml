@@ -1,7 +1,7 @@
 name: ac_dart
 description: AnyCode Dart services and extensions
 version: 0.1.2
-homepage: https://github.com/anycode/ac_flutter_framework
+homepage: https://github.com/anycode/dart_lib
 publish_to: 'none'
 
 environment:
