@@ -9,7 +9,7 @@ import 'package:logging/logging.dart';
 class PerformanceExtension extends Extension<LogOptions> {
   final Logger? logger;
 
-  PerformanceExtension({LogOptions defaultOptions = const LogOptions(), this.logger}) : super(defaultOptions: defaultOptions);
+  PerformanceExtension({super.defaultOptions = const LogOptions(), this.logger});
 
   void log(String message, LogOptions options, {Level? level}) {
     if (logger != null) {
