@@ -87,6 +87,7 @@ class HttpApiClient extends AcApiClient {
           ],
         );
 
+  @override
   Future<Response> get(
     String path, {
     String? host,
@@ -105,6 +106,7 @@ class HttpApiClient extends AcApiClient {
     );
   }
 
+  @override
   Future<Response> post(
     String path, {
     String? host,
@@ -147,6 +149,7 @@ class HttpApiClient extends AcApiClient {
     );
   }
 
+  @override
   Future<Response> put(
     String path, {
     String? host,
@@ -189,6 +192,7 @@ class HttpApiClient extends AcApiClient {
     );
   }
 
+  @override
   Future<Response> patch(
     String path, {
     String? host,
@@ -232,6 +236,7 @@ class HttpApiClient extends AcApiClient {
   }
 
   // DELETE by default doesn't support body, so pass it manually via http.Request
+  @override
   Future<Response> delete(
     String path, {
     String? host,

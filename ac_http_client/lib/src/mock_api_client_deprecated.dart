@@ -30,6 +30,7 @@ class MockApiClientDeprecated extends AcApiClient {
   MockApiClientDeprecated({super.baseUri, super.uriBuilder, this.mockClientHandler = defaultMockHandler});
 
   /// Mocked GET method to read data
+  @override
   Future<Response> get(String path, {String? host, String? url, Map<String, String>? headers, Map<String, dynamic>? queryParameters}) {
     return mockClientHandler(
       buildRequest(
@@ -41,6 +42,7 @@ class MockApiClientDeprecated extends AcApiClient {
   }
 
   /// Mocked POST method to post data and read response
+  @override
   Future<Response> post(String path,
       {String? host, String? url, Map<String, String>? headers, body, Encoding? encoding, Map<String, String>? queryParameters}) {
     return mockClientHandler(
@@ -55,6 +57,7 @@ class MockApiClientDeprecated extends AcApiClient {
   }
 
   /// Mocked PUT method to put data
+  @override
   Future<Response> put(String path,
       {String? host, String? url, Map<String, String>? headers, body, Encoding? encoding, Map<String, String>? queryParameters}) {
     return mockClientHandler(
@@ -69,6 +72,7 @@ class MockApiClientDeprecated extends AcApiClient {
   }
 
   /// Mocked PATCH method to patch data
+  @override
   Future<Response> patch(String path,
       {String? host, String? url, Map<String, String>? headers, body, Encoding? encoding, Map<String, String>? queryParameters}) {
     return mockClientHandler(
@@ -83,6 +87,7 @@ class MockApiClientDeprecated extends AcApiClient {
   }
 
   /// Mocked DELETE method to delete data
+  @override
   Future<Response> delete(String path,
       {String? host, String? url, Map<String, String>? headers, dynamic body, Map<String, String>? queryParameters}) async {
     return mockClientHandler(
