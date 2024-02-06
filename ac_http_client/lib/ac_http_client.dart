@@ -1,5 +1,13 @@
 library dev.anycode.dart.http_client;
 
+export 'package:cancellation_token_http/http.dart';
+export 'package:http_extensions/http_extensions.dart';
+export 'package:http_extensions_base_url/http_extensions_base_url.dart';
+export 'package:http_extensions_cache/http_extensions_cache.dart';
+export 'package:http_extensions_headers/http_extensions_headers.dart';
+export 'package:http_extensions_log/http_extensions_log.dart';
+export 'package:http_extensions_retry/http_extensions_retry.dart';
+
 export 'src/ac_api_client.dart';
 export 'src/http_api_client.dart';
 export 'src/mock_api_client.dart';
