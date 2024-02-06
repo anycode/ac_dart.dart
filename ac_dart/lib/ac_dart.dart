@@ -1,13 +1,15 @@
-library dev.anycode.flutter.debug;
+library dev.anycode.dart;
 
 export 'src/converter/date_range_converter.dart';
 export 'src/converter/date_time_converter.dart';
 export 'src/converter/double_range_converter.dart';
 export 'src/converter/int_range_converter.dart';
+export 'src/extensions/core_ext.dart';
 export 'src/extensions/datetime_ext.dart';
 export 'src/extensions/http_ext.dart';
 export 'src/extensions/iterable_ext.dart';
 export 'src/extensions/json_ext.dart';
+export 'src/extensions/kotlin_ext.dart';
 export 'src/extensions/latlng_ext.dart';
 export 'src/extensions/number_ext.dart';
 export 'src/format/format_datetime.dart';
