@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:ac_http_client/ac_http_client.dart';
 import 'package:cancellation_token_http/testing.dart';
 import 'package:flutter/services.dart';
-import 'package:cancellation_token_http/http.dart';
 
 /// Api client for testing purposes.
 /// This API client extends HTTP API client with mock functionality and all HTTP API client logging methods.
