@@ -49,13 +49,15 @@ dependencies:
       path: http_extensions_retry
       ref: cancelable
   json_annotation: ^4.8.1
-  mime: ^1.0.4
+  logging: ^1.2.0
+  mime: ^1.0.5
   oauth2: #^2.0.1
     git:
       url: https://github.com/anycode/oauth2.git
       ref: cancelable
 
 dev_dependencies:
+  lints: ^3.0.0
   json_serializable: ^6.7.1
 
 dependency_overrides:
