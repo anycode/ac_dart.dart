@@ -1,11 +1,7 @@
 import 'package:http_extensions_log/http_extensions_log.dart';
 
 class NoBinaryLogExtension extends LogExtension {
-  NoBinaryLogExtension({LogOptions defaultOptions = const LogOptions(), logger})
-      : super(
-          defaultOptions: defaultOptions,
-          logger: logger,
-        );
+  NoBinaryLogExtension({super.defaultOptions = const LogOptions(), super.logger});
 
   @override
   void log(String message, LogOptions options) {
