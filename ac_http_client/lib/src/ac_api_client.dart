@@ -10,7 +10,9 @@ abstract class AcApiClient {
   final Uri? baseUri;
   final UriBuilder? _uriBuilder;
 
-  AcApiClient({this.baseUri, UriBuilder? uriBuilder}) : _uriBuilder = uriBuilder;
+  AcApiClient({this.baseUri, UriBuilder? uriBuilder}) :
+        assert(baseUri != null || uriBuilder != null, 'Either `baseUri` or `uriBuilder` must be specified'),
+        _uriBuilder = uriBuilder;
 
   Future<Response> get(String path, {String? host, String? url, Map<String, String>? headers, Map<String, dynamic>? queryParameters});
 
@@ -31,7 +33,7 @@ abstract class AcApiClient {
 
   UriBuilder get defaultUriBuilder
       => ({String? url, String? host, int? port, String? path, Map<String, dynamic>? queryParameters}) {
-            final uri;
+            final Uri uri;
             if (url != null && (url.startsWith('http://') || url.startsWith('https://'))) {
               // full URL
               uri = Uri.parse(url);
@@ -40,10 +42,10 @@ abstract class AcApiClient {
               // if `path` itself is not specified. If `path` is specified, it will be used and
               // `url` is ignored
               path ??= url;
-              uri = baseUri;
+              uri = baseUri!;
             }
             if (path?.startsWith('/') == false) {
-              path = '${uri!.path}/$path';
+              path = '${uri.path}/$path';
             }
             return uri.replace(host: host, path: path, port: port, queryParameters: queryParameters);
           };
