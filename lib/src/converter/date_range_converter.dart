@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:ranges/ranges.dart';
+import 'package:ac_ranges/ac_ranges.dart';
 
 ///
 ///  DataRangeConverter annotation
