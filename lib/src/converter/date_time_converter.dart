@@ -12,7 +12,13 @@ import 'package:json_annotation/json_annotation.dart';
 ///  DateTime date;
 ///
 class DateTimeConverter implements JsonConverter<DateTime, Object> {
-  const DateTimeConverter();
+
+  final bool _useUtc;
+
+  @Deprecated('Use DateTimeConverter.utc() instead, or use DateTimeConverter.local() if you need local time')
+  const DateTimeConverter() : _useUtc = true;
+  const DateTimeConverter.utc() : _useUtc = true;
+  const DateTimeConverter.local() : _useUtc = false;
 
   // DateTimes can represent time values that are at a distance of at most 100,000,000
   // days from epoch (1970-01-01 UTC): -271821-04-20 to 275760-09-13.
@@ -29,7 +35,8 @@ class DateTimeConverter implements JsonConverter<DateTime, Object> {
       } else if (json == 'infinity') {
         return maxDateTime;
       } else {
-        return DateTime.parse(json);
+        final dateTime = DateTime.parse(json);
+        return _useUtc ? dateTime.toUtc() : dateTime.toLocal();
       }
     } else {
       throw Exception('Invalid input for DateTime');
@@ -43,7 +50,11 @@ class DateTimeConverter implements JsonConverter<DateTime, Object> {
     } else if (dateTime == maxDateTime) {
       return 'infinity';
     } else {
-      return dateTime.toUtc().toIso8601StringTZD();
+      if (_useUtc) {
+        return dateTime.toUtc().toIso8601StringTZD();
+      } else {
+        return dateTime.toLocal().toIso8601StringTZD();
+      }
     }
   }
 }
@@ -58,18 +69,23 @@ class DateTimeConverter implements JsonConverter<DateTime, Object> {
 ///  List<DateTime> dates;
 ///
 class DateTimeListConverter implements JsonConverter<List<DateTime>, Object> {
-  const DateTimeListConverter();
+  final bool _useUtc;
+
+  @Deprecated('Use DateTimeListConverter.utc() instead, or use DateTimeListConverter.local() if you need local time')
+  const DateTimeListConverter() : _useUtc = true;
+  const DateTimeListConverter.utc() : _useUtc = true;
+  const DateTimeListConverter.local() : _useUtc = false;
 
   @override
   List<DateTime> fromJson(Object json) {
-    const converter = DateTimeConverter();
+    final converter = _useUtc ? DateTimeConverter.utc() : DateTimeConverter.local();
     return (json as List).map((input) => converter.fromJson(input)).toList();
   }
 
   @override
   List<String> toJson(List<DateTime> datesTimes) {
-    const converter = DateTimeConverter();
-    return datesTimes.map((DateTime dateTime) => converter.toJson(dateTime)).toList();
+    final converter = _useUtc ? DateTimeConverter.utc() : DateTimeConverter.local();
+    return datesTimes.map((dateTime) => converter.toJson(dateTime)).toList();
   }
 }
 
@@ -142,7 +158,7 @@ class DateListConverter implements JsonConverter<List<DateTime>, Object> {
   @override
   List<String> toJson(List<DateTime> datesTimes) {
     const converter = DateConverter();
-    return datesTimes.map((DateTime dateTime) => converter.toJson(dateTime)).toList();
+    return datesTimes.map((dateTime) => converter.toJson(dateTime)).toList();
   }
 }
 
@@ -155,21 +171,31 @@ class DateListConverter implements JsonConverter<List<DateTime>, Object> {
 ///  @TimeConverter()
 ///  DateTime date;
 ///
-class TimeConverter implements JsonConverter<DateTime, dynamic> {
-  static final DateFormat _format = DateFormat('HH:mm');
+class TimeConverter implements JsonConverter<DateTime, Object> {
+  static final DateFormat _formatHm = DateFormat.Hm();
+  static final DateFormat _formatHms = DateFormat.Hms();
 
-  const TimeConverter();
+  final bool _withSeconds;
+  
+  @Deprecated('Use TimeConverter.hm() instead, or use TimeConverter.hms() if you need to convert time including seconds')
+  const TimeConverter() : _withSeconds = false;
+  const TimeConverter.hm() : _withSeconds = false;
+  const TimeConverter.hms() : _withSeconds = true;
 
   @override
-  DateTime fromJson(dynamic json) {
-    if (json is DateTime) return json.toLocal();
-    if (json is String) return _format.parse(json).toLocal();
-    throw Exception('Invalid input for Time');
+  DateTime fromJson(Object json) {
+    if (json is DateTime) {
+      return json.toLocal();
+    } else if (json is String) {
+      return _withSeconds ? _formatHms.parse(json).toLocal() : _formatHm.parse(json).toLocal();
+    } else {
+      throw Exception('Invalid input for Time');
+    }
   }
 
   @override
   String toJson(DateTime dateTime) {
-    return _format.format(dateTime.toLocal());
+    return _withSeconds ? _formatHms.format(dateTime.toLocal()) : _formatHm.format(dateTime.toLocal());
   }
 }
 
@@ -182,18 +208,25 @@ class TimeConverter implements JsonConverter<DateTime, dynamic> {
 ///  @TimesConverter()
 ///  List<DateTime> times;
 ///
-class TimeListConverter implements JsonConverter<List<DateTime>, Object> {
-  const TimeListConverter();
+class TimeListConverter implements JsonConverter<List<DateTime>, List<Object>> {
+  final bool _withSeconds;
+
+  @Deprecated('Use TimeListConverter.hm() instead, or use TimeListConverter.hms() if you need to convert time including seconds')
+  const TimeListConverter() : _withSeconds = false;
+
+  const TimeListConverter.hm() : _withSeconds = false;
+
+  const TimeListConverter.hms() : _withSeconds = true;
 
   @override
-  List<DateTime> fromJson(Object json) {
-    const converter = TimeConverter();
-    return (json as List).map((input) => converter.fromJson(input)).toList();
+  List<DateTime> fromJson(List<Object> json) {
+    final converter = _withSeconds ? TimeConverter.hms() : TimeConverter.hm();
+    return json.map((input) => converter.fromJson(input)).toList();
   }
 
   @override
   List<String> toJson(List<DateTime> datesTimes) {
-    const converter = TimeConverter();
-    return datesTimes.map((DateTime dateTime) => converter.toJson(dateTime)).toList();
+    final converter = _withSeconds ? TimeConverter.hms() : TimeConverter.hm();
+    return datesTimes.map((dateTime) => converter.toJson(dateTime)).toList();
   }
 }

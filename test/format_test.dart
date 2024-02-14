@@ -26,12 +26,12 @@ void main() {
       expect(formatCsvDistance(null), '');
       expect(formatTableDistance(-989.94), '-989,94');
     });
-  });
 
-  test('Test formatting geo', () {
-    expect(formatLatitude(245.23844354), '245°14\'18.397"N');
-    expect(formatLatitude(-143.3845908940), '143°23\'4.527"S');
-    expect(formatLongitude(143.3845908940), '143°23\'4.527"E');
-    expect(formatLongitude(-23.8792347898), '23°52\'45.245"W');
+    test('Test formatting geo', () {
+      expect(formatLatitude(245.23844354), '245°14\'18.397"N');
+      expect(formatLatitude(-143.3845908940), '143°23\'4.527"S');
+      expect(formatLongitude(143.3845908940), '143°23\'4.527"E');
+      expect(formatLongitude(-23.8792347898), '23°52\'45.245"W');
+    });
   });
 }
