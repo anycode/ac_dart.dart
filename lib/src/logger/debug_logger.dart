@@ -15,6 +15,8 @@ class DebugLogger extends AcLogger {
 
   MultiFileOutput? get output => _output;
 
+  /// Creates/returns a single logger with given name. Optionally, a level, a multi file output, a filter and a printer can be provided.
+  /// If you need multiple instances, use [DebugLogger.instantiate()] constructor.
   factory DebugLogger({
     required String name,
     Level? level,
@@ -24,6 +26,8 @@ class DebugLogger extends AcLogger {
   }) =>
       AcLogger.singleton(name, () => DebugLogger.instantiate(name: name, level: level, output: output, filter: filter, printer: printer));
 
+  /// Creates new instance of [DebugLogger]. Each call creates new instance, even if name is the same.
+  /// If you need single instance, use [DebugLogger()] factory constructor.
   DebugLogger.instantiate({
     required super.name,
     super.level,
@@ -38,6 +42,7 @@ class DebugLogger extends AcLogger {
         );
 }
 
+/// Default [LogPrinter] for [DebugLogger]
 class DebugPrinter extends LogPrinter {
   static const uuid = Uuid();
 
@@ -71,6 +76,7 @@ class DebugPrinter extends LogPrinter {
   }
 }
 
+/// Default [FileOutput] for [DebugLogger]
 class MultiFileOutput extends FileOutput {
   static const defaultMaxSize = 2 * 1024 * 1024; // 2 MB
   static const defaultMaxFiles = 10;

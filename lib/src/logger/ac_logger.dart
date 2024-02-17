@@ -1,7 +1,7 @@
 import 'package:logger/logger.dart';
 import 'package:logging/logging.dart' as lgg;
 
-/// Debugging logger which logs events to console and multiple files (rotated)
+/// Logger which logs events to default output with default filter and printer
 class AcLogger extends Logger {
   /// All attached [Logger]s in the system.
   static final _loggers = <String, AcLogger>{};
@@ -13,8 +13,11 @@ class AcLogger extends Logger {
   final Level? level;
   lgg.Logger? _loggingLogger;
 
+  /// Returns an existing logger with given name. If it does not exists, creates a new one lazily with a callback function.
   static singleton<T extends AcLogger>(String name, T Function() logger) => _loggers.putIfAbsent(name, logger);
 
+  /// Creates/returns a single logger with given name. Optionally, a level, an output, a filter and a printer can be provided.
+  /// If you need multiple instances, use [AcLogger.instantiate()] constructor.
   factory AcLogger({required String name, Level? level, LogOutput? output, LogFilter? filter, LogPrinter? printer}) => singleton(
       name,
       () => AcLogger.instantiate(
@@ -25,6 +28,8 @@ class AcLogger extends Logger {
             printer: printer ?? PrettyPrinter(stackTraceBeginIndex: 1, methodCount: 3, errorMethodCount: 10),
           ));
 
+  /// Creates new instance of [AcLogger]. Each call creates new instance, even if name is the same.
+  /// If you need single instance, use [AcLogger()] factory constructor.
   AcLogger.instantiate({
     required this.name,
     this.level,
@@ -35,7 +40,7 @@ class AcLogger extends Logger {
 
   /// Returns Logger from https://pub.dev/packages/logging package. Starts listening for events on
   /// logging logger and logs the events to self.
-  /// If needed for some reasons, e.g. for HTTP Extensions https://pub.dev/packages/http_extensions
+  /// May be used for some reasons, e.g. for HTTP Extensions https://pub.dev/packages/http_extensions
   lgg.Logger get loggingLogger {
     if (_loggingLogger == null) {
       lgg.hierarchicalLoggingEnabled = true;
