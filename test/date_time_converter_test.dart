@@ -18,25 +18,25 @@ void main() {
 
   group('Test datetime converter', () {
     test('Test datetime conversion (UTC)', () {
-      const DateTimeConverter converter = DateTimeConverter.utc();
+      const DateTimeConverter converter = DateTimeConverter();
       expect(converter.fromJson('2020-01-01T00:00:00.000Z'), DateTime.utc(2020, 01, 01));
       expect(converter.toJson(DateTime.utc(2020, 01, 01)), '2020-01-01T00:00:00.000Z');
     });
 
     test('Test datetime conversion (Local time)', () {
-      const DateTimeConverter converter = DateTimeConverter.local();
+      const DateTimeConverter converter = DateTimeConverter(utc: false);
       expect(converter.fromJson('2020-01-01T00:00:00.000+01:00'), DateTime(2020, 01, 01));
       expect(converter.toJson(DateTime(2020, 01, 01)), '2020-01-01T00:00:00.000+01:00');
     });
 
     test('Test datetime list conversion (UTC)', () {
-      const DateTimeListConverter converter = DateTimeListConverter.utc();
+      const DateTimeListConverter converter = DateTimeListConverter();
       expect(converter.fromJson(['2020-01-01T00:00:00.000Z']), [DateTime.utc(2020, 01, 01)]);
       expect(converter.toJson([DateTime.utc(2020, 01, 01)]), ['2020-01-01T00:00:00.000Z']);
     });
 
     test('Test datetime list conversion (Local time)', () {
-      const DateTimeListConverter converter = DateTimeListConverter.local();
+      const DateTimeListConverter converter = DateTimeListConverter(utc: false);
       expect(converter.fromJson(['2020-01-01T00:00:00.000+01:00']), [DateTime(2020, 01, 01)]);
       expect(converter.toJson([DateTime(2020, 01, 01)]), ['2020-01-01T00:00:00.000+01:00']);
     });
@@ -46,26 +46,26 @@ void main() {
   group('Test time converter', () {
     test('Test time conversion Hm', () {
       // seconds are ignored
-      const TimeConverter converter = TimeConverter.hm();
+      const TimeConverter converter = TimeConverter();
       expect(converter.fromJson('12:34:56'), DateTime(1970, 1, 1, 12, 34, 00));
       expect(converter.toJson(DateTime(0, 0, 0, 12, 34, 56)), '12:34');
     });
 
     test('Test time conversion Hms', () {
-      const TimeConverter converter = TimeConverter.hms();
+      const TimeConverter converter = TimeConverter(includeSeconds: true);
       expect(converter.fromJson('12:34:56'), DateTime(1970, 1, 1, 12, 34, 56));
       expect(converter.toJson(DateTime(0, 0, 0, 12, 34, 56)), '12:34:56');
     });
 
     test('Test time list conversion Hm', () {
       // seconds are ignored
-      const TimeListConverter converter = TimeListConverter.hm();
+      const TimeListConverter converter = TimeListConverter();
       expect(converter.fromJson(['12:34:56']), [DateTime(1970, 1, 1, 12, 34, 00)]);
       expect(converter.toJson([DateTime(0, 0, 0, 12, 34, 56)]), ['12:34']);
     });
 
     test('Test time list conversion Hms', () {
-      const TimeListConverter converter = TimeListConverter.hms();
+      const TimeListConverter converter = TimeListConverter(includeSeconds: true);
       expect(converter.fromJson(['12:34:56']), [DateTime(1970, 1, 1, 12, 34, 56)]);
       expect(converter.toJson([DateTime(0, 0, 0, 12, 34, 56)]), ['12:34:56']);
     });
