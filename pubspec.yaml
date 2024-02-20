@@ -1,6 +1,6 @@
 name: ac_dart
 description: AnyCode Dart services and extensions
-version: 0.1.5
+version: 0.1.6
 homepage: https://github.com/anycode/ac_dart.dart
 repository: https://github.com/anycode/ac_dart.dart
 publish_to: 'none'
@@ -21,7 +21,7 @@ dependencies:
   logger: ^2.0.2+1
   logging: ^1.2.0
   media_storage: ^0.0.1
-  meta: ^1.10.0
+  meta: ^1.11.0
   package_info_plus: ^5.0.1
   path: ^1.9.0
   path_provider: ^2.1.2
