@@ -1,6 +1,5 @@
 library dev.anycode.dart;
 
-export 'src/converter/color_converter.dart';
 export 'src/converter/date_range_converter.dart';
 export 'src/converter/date_time_converter.dart';
 export 'src/converter/double_range_converter.dart';
