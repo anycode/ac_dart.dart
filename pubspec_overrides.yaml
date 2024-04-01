@@ -1,0 +1,6 @@
+dependency_overrides:
+#  ac_ranges:
+#    #path: ../../../../dart/lib/ac_ranges
+#    git:
+#      url: https://github.com/anycode/ac_ranges.dart.git
+#      ref: v3.0.8
