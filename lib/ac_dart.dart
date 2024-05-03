@@ -6,6 +6,7 @@ export 'src/converter/double_range_converter.dart';
 export 'src/converter/int_range_converter.dart';
 export 'src/converter/numeric_converter.dart';
 export 'src/extensions/core_ext.dart';
+export 'src/extensions/cron_ext.dart';
 export 'src/extensions/datetime_ext.dart';
 export 'src/extensions/http_ext.dart';
 export 'src/extensions/json_ext.dart';
