@@ -1,5 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:ac_ranges/ac_ranges.dart';
+import 'package:pgsql_annotation/pgsql_annotation.dart';
 
 ///
 ///  Use DataRangeConverter annotation with the DataRange members, e.g.
@@ -8,7 +9,7 @@ import 'package:ac_ranges/ac_ranges.dart';
 ///  @DateRangeConverter()
 ///  DateRange dateRange;
 ///  ```
-class DateRangeConverter implements JsonConverter<DateRange, String> {
+class DateRangeConverter implements JsonConverter<DateRange, String>, PgSqlConverter<DateRange, String> {
   const DateRangeConverter();
 
   @override
@@ -16,6 +17,12 @@ class DateRangeConverter implements JsonConverter<DateRange, String> {
 
   @override
   String toJson(DateRange range) => range.toString();
+
+  @override
+  DateRange fromPgSql(String text) => fromJson(text);
+
+  @override
+  String toPgSql(DateRange range) => toJson(range);
 }
 
 ///
@@ -25,7 +32,7 @@ class DateRangeConverter implements JsonConverter<DateRange, String> {
 ///  @DateRangesConverter()
 ///  List<DateRange> dateRanges;
 ///  ```
-class DateRangesConverter implements JsonConverter<List<DateRange>, List<String>> {
+class DateRangesConverter implements JsonConverter<List<DateRange>, List<String>>, PgSqlConverter<List<DateRange>, List<String>> {
   const DateRangesConverter();
 
   @override
@@ -38,4 +45,13 @@ class DateRangesConverter implements JsonConverter<List<DateRange>, List<String>
     return ranges.map((DateRange range) => range.toString()).toList();
   }
 
+  @override
+  List<DateRange> fromPgSql(List<String> ranges) {
+    return fromJson(ranges);
+  }
+
+  @override
+  List<String> toPgSql(List<DateRange> ranges) {
+    return toJson(ranges);
+  }
 }
