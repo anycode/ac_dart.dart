@@ -4,59 +4,64 @@ import 'dart:io';
 import 'package:cross_file/cross_file.dart';
 import 'package:logger/logger.dart';
 import 'package:path/path.dart';
-import 'package:uuid/uuid.dart';
 
 import 'ac_logger.dart';
 
-/// Debugging logger which logs events to console and multiple files (rotated)
+/// Debugging logger which logs events to console and multiple (rotated) files.
+/// A logger must have a name and optional ID.
+/// If `output` is not provided, all loggers with same name share the same output.
+/// If `printer` is not provided, `id` is used as a prefix for each line of DebugPrinter().
 class DebugLogger extends AcLogger {
-  /// [MultiFileOutput] output
-  final MultiFileOutput? _output;
-
-  MultiFileOutput? get output => _output;
+  /// List of [MultiFileOutput] outputs
+  /// All debug loggers with same name share the same output
+  static final _outputs = <String, MultiFileOutput>{};
 
   /// Creates/returns a single logger with given name. Optionally, a level, a multi file output, a filter and a printer can be provided.
   /// If you need multiple instances, use [DebugLogger.instantiate()] constructor.
   factory DebugLogger({
     required String name,
+    String? id,
     Level? level,
     MultiFileOutput? output,
     LogFilter? filter,
     LogPrinter? printer,
   }) =>
-      AcLogger.singleton(name, () => DebugLogger.instantiate(name: name, level: level, output: output, filter: filter, printer: printer));
+      AcLogger.singleton('$name$id', () => DebugLogger.instantiate(name: name, id: id, level: level, output: output, filter: filter, printer: printer));
 
   /// Creates new instance of [DebugLogger]. Each call creates new instance, even if name is the same.
   /// If you need single instance, use [DebugLogger()] factory constructor.
   DebugLogger.instantiate({
     required super.name,
+    String? id,
     super.level,
     MultiFileOutput? output,
     LogFilter? filter,
     LogPrinter? printer,
-  })  : _output = output,
-        super.instantiate(
-          output: MultiOutput([output, ConsoleOutput()]),
+  }) : super.instantiate(
+          output: MultiOutput([
+            _outputs.putIfAbsent(name, () => output ?? MultiFileOutput(file: File('logs/$name.log'))),
+            ConsoleOutput(),
+          ]),
           filter: filter ?? DevelopmentFilter(),
-          printer: printer ?? DebugPrinter(),
+          printer: printer ?? DebugPrinter(prefix: id),
         );
 }
 
 /// Default [LogPrinter] for [DebugLogger]
 class DebugPrinter extends LogPrinter {
-  static const uuid = Uuid();
+  final String _prefix;
+
+  DebugPrinter({String? prefix}) : _prefix = prefix != null ? '$prefix | ' : '';
 
   @override
   List<String> log(LogEvent event) {
-    final recId = uuid.v1().substring(0, 8);
     return [
-      ...stringifyMessage(event.message).split('\n').map((line) => '$recId | ${event.time} | ${event.level.name} | $line'),
-      if (event.error != null) '$recId | ${event.time} | ${event.level.name} | error:\n',
-      if (event.error != null)
-        ...event.error.toString().split('\n').map((line) => '$recId | ${event.time} | ${event.level.name} |   $line\n'),
-      if (event.stackTrace != null) '$recId | ${event.time} | ${event.level.name} | stack trace: \n',
+      ...stringifyMessage(event.message).split('\n').map((line) => '$_prefix${event.time} | ${event.level.name} | $line'),
+      if (event.error != null) '$_prefix${event.time} | ${event.level.name} | error:\n',
+      if (event.error != null) ...event.error.toString().split('\n').map((line) => '$_prefix${event.time} | ${event.level.name} |   $line'),
+      if (event.stackTrace != null) '$_prefix${event.time} | ${event.level.name} | stack trace: \n',
       if (event.stackTrace != null)
-        ...event.stackTrace.toString().split('\n').map((line) => '$recId | ${event.time} | ${event.level.name} |   $line\n'),
+        ...event.stackTrace.toString().split('\n').map((line) => '$_prefix${event.time} | ${event.level.name} |   $line'),
     ];
   }
 
@@ -92,21 +97,20 @@ class MultiFileOutput extends FileOutput {
     super.encoding = utf8,
     this.maxFiles = defaultMaxFiles,
     this.maxSize = defaultMaxSize,
-  }) : super(file: file);
+  }) : super(file: file) {
+    _init();
+  }
 
-  @override
-  Future<void> init() async {
-    final files = <File>[];
+  void _init() {
     final base = basenameWithoutExtension(file.path);
     final ext = extension(file.path);
     final dir = dirname(file.path);
     if (maxFiles > 0) {
       for (int i = 0; i < maxFiles; i++) {
-        final filename = '$dir/$base.$i.$ext';
-        files.add(File(filename));
+        final filename = '$dir/$base.$i$ext';
+        _files.add(File(filename));
       }
     }
-    return super.init();
   }
 
   List<File> get files => _files;
@@ -119,7 +123,7 @@ class MultiFileOutput extends FileOutput {
         file.deleteSync();
       }
     }
-    init();
+    _init();
   }
 
   @override
