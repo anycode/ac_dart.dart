@@ -39,7 +39,7 @@ class FormatDateTime {
   /// ```dart
   /// FormatDateTime.short().format(DateTime.now())
   /// ```
-  format(DateTime? dateTime) => dateTime == null ? emptyValue : _format.format(dateTime);
+  String format(DateTime? dateTime) => dateTime == null ? emptyValue : _format.format(dateTime);
 }
 
 /// Global shorthand to `FormatDateTime.short().format(DateTime.now())`
@@ -89,7 +89,7 @@ class FormatDate {
   /// ```dart
   /// FormatDate.long().format(DateTime.now())
   /// ```
-  format(DateTime? dateTime) => dateTime == null ? emptyValue : _format.format(dateTime);
+  String format(DateTime? dateTime) => dateTime == null ? emptyValue : _format.format(dateTime);
 }
 
 /// Global shorthand to `FormatDate.short().format(DateTime.now())`
@@ -142,7 +142,7 @@ class FormatTime {
   /// ```dart
   /// FormatTime.short().format(DateTime.now())
   /// ```
-  format(DateTime? dateTime) => dateTime == null ? emptyValue : _format.format(dateTime);
+  String format(DateTime? dateTime) => dateTime == null ? emptyValue : _format.format(dateTime);
 }
 
 /// Global shorthand to `FormatTime.short().format(DateTime.now())`
