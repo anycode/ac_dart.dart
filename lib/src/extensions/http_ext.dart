@@ -7,6 +7,9 @@ extension ContentTypeExt on ContentType {
   /// Content type representing text/csv mime type
   static final csv = ContentType('text', 'csv', charset: 'utf-8');
 
+  /// Content type representing text/csv mime type with Windows-1250 encoding
+  static final csvWin = ContentType('text', 'csv', charset: 'windows-1250');
+
   /// Content type representing application/pdf mime type
   static final pdf = ContentType('application', 'pdf');
 
