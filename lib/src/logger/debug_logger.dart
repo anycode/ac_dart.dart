@@ -45,6 +45,8 @@ class DebugLogger extends AcLogger {
           filter: filter ?? DevelopmentFilter(),
           printer: printer ?? DebugPrinter(prefix: id),
         );
+
+  MultiFileOutput get output => _outputs[name]!;
 }
 
 /// Default [LogPrinter] for [DebugLogger]
