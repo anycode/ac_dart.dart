@@ -4,6 +4,9 @@ extension ContentTypeExt on ContentType {
   /// Content type representing application/error+json mime type
   static final errorJson = ContentType('application', 'error+json', charset: 'utf-8');
 
+  /// Content type representing application/geo+json mime type
+  static final geoJson = ContentType('application', 'geo+json', charset: 'utf-8');
+
   /// Content type representing text/csv mime type
   static final csv = ContentType('text', 'csv', charset: 'utf-8');
 
@@ -21,4 +24,5 @@ extension ContentTypeExt on ContentType {
 
   /// Content type representing application/x-www-form-urlencoded mime type
   static final formUrlEncoded = ContentType('application', 'x-www-form-urlencoded');
+
 }
