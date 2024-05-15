@@ -1,3 +1,11 @@
+## 0.1.9
+
+- Add getter to return output of the logger.
+- HEX converter to convert PgSQL hex bytea (byte array) to/from String
+- Quarter (part of a year) converter. Can be represented as datetime as "YYYY-MM-01" or a String "YYYYqX" where X is number 1-4
+- New ContentType for application/geo+json (Geo JSON)
+- Extension to offer logging methods from `logging` package logger, to allow easier transition.
+
 ## 0.1.8
 
 - Added cron extension which logs start and finish of the tasks to 'cronjob.log' file
