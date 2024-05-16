@@ -16,6 +16,7 @@ export 'src/extensions/kotlin_ext.dart';
 export 'src/extensions/latlng_ext.dart';
 export 'src/extensions/logger_ext.dart';
 export 'src/extensions/number_ext.dart';
+export 'src/extensions/string_ext.dart';
 export 'src/format/format_datetime.dart';
 export 'src/format/format_distance.dart';
 export 'src/format/format_latlng.dart';
