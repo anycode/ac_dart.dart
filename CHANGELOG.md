@@ -1,3 +1,8 @@
+## 0.1.10
+
+- Update dependencies
+- Update Dart SDK
+
 ## 0.1.9
 
 - Add getter to return output of the logger.
