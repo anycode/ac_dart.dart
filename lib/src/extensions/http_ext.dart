@@ -25,4 +25,11 @@ extension ContentTypeExt on ContentType {
   /// Content type representing application/x-www-form-urlencoded mime type
   static final formUrlEncoded = ContentType('application', 'x-www-form-urlencoded');
 
+  bool get isBinary => primaryType == 'image' ||
+      primaryType == 'video' ||
+      primaryType == 'audio' ||
+      subType == 'octet-stream' ||
+      subType == 'pdf' ||
+      subType == 'zip';
+
 }
