@@ -16,6 +16,8 @@ class DebugLogger extends AcLogger {
   /// All debug loggers with same name share the same output
   static final _outputs = <String, MultiFileOutput>{};
 
+  final bool consoleOutputOnly;
+
   /// Creates/returns a single logger with given name. Optionally, a level, a multi file output, a filter and a printer can be provided.
   /// If you need multiple instances, use [DebugLogger.instantiate()] constructor.
   factory DebugLogger({
@@ -26,7 +28,16 @@ class DebugLogger extends AcLogger {
     LogFilter? filter,
     LogPrinter? printer,
   }) =>
-      AcLogger.singleton('$name$id', () => DebugLogger.instantiate(name: name, id: id, level: level, output: output, filter: filter, printer: printer));
+      AcLogger.singleton('$name$id', () => DebugLogger.instantiate(name: name, id: id, level: level, output: output, filter: filter, printer: printer, consoleOutputOnly: false));
+
+  factory DebugLogger.console({
+    required String name,
+    String? id,
+    Level? level,
+    LogFilter? filter,
+    LogPrinter? printer,
+  }) =>
+      AcLogger.singleton('$name$id', () => DebugLogger.instantiate(name: name, id: id, level: level, filter: filter, printer: printer, consoleOutputOnly: true));
 
   /// Creates new instance of [DebugLogger]. Each call creates new instance, even if name is the same.
   /// If you need single instance, use [DebugLogger()] factory constructor.
@@ -37,16 +48,19 @@ class DebugLogger extends AcLogger {
     MultiFileOutput? output,
     LogFilter? filter,
     LogPrinter? printer,
+    this.consoleOutputOnly = false,
   }) : super.instantiate(
-          output: MultiOutput([
-            _outputs.putIfAbsent(name, () => output ?? MultiFileOutput(file: File('logs/$name.log'))),
-            ConsoleOutput(),
-          ]),
+          output: consoleOutputOnly
+              ? ConsoleOutput()
+              : MultiOutput([
+                _outputs.putIfAbsent(name, () => output ?? MultiFileOutput(file: File('logs/$name.log'))),
+                ConsoleOutput(),
+              ]),
           filter: filter ?? DevelopmentFilter(),
           printer: printer ?? DebugPrinter(prefix: id),
         );
 
-  MultiFileOutput get output => _outputs[name]!;
+  MultiFileOutput? get output => consoleOutputOnly ? null : _outputs[name]!;
 }
 
 /// Default [LogPrinter] for [DebugLogger]
