@@ -1,3 +1,7 @@
+## 0.1.12
+
+- Allow logging to console only (suitable for Flutter Web) by calling `DebugLogger.console()` factory constructor.
+
 ## 0.1.11
 
 - Add extension getter `isBinary` to ContentType to check if content type is binary
