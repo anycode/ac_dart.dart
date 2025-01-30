@@ -121,6 +121,7 @@ class MultiFileOutput extends FileOutput {
     final base = basenameWithoutExtension(file.path);
     final ext = extension(file.path);
     final dir = dirname(file.path);
+    _files.clear();
     if (maxFiles > 0) {
       for (int i = 0; i < maxFiles; i++) {
         final filename = '$dir/$base.$i$ext';
@@ -134,11 +135,15 @@ class MultiFileOutput extends FileOutput {
   List<XFile> get xFiles => _files.map((f) => XFile(f.path)).toList();
 
   void clearLog() {
-    for (final file in _files) {
-      if (file.existsSync() == true) {
-        file.deleteSync();
+    for (final f in _files) {
+      if (f.existsSync() == true) {
+        f.deleteSync();
       }
     }
+    if (file.existsSync()) {
+      file.deleteSync();
+    }
+    file.createSync();
     _init();
   }
 
