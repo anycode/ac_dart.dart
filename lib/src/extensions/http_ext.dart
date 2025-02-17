@@ -32,4 +32,6 @@ extension ContentTypeExt on ContentType {
       subType == 'pdf' ||
       subType == 'zip';
 
+  // maybe too lose, possible should be more strict
+  bool get isText => ! isBinary;
 }
