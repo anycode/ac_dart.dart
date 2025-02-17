@@ -25,5 +25,6 @@ export 'src/format/format_percent.dart';
 export 'src/format/format_price.dart';
 export 'src/logger/ac_logger.dart';
 export 'src/logger/debug_logger.dart';
-export 'src/utils/format.dart';
 export 'src/utils/callbacks.dart';
+export 'src/utils/event_bus.dart';
+export 'src/utils/format.dart';
