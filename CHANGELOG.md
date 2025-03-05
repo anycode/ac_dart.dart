@@ -1,3 +1,9 @@
+## 0.1.13
+
+- Fix clearing log files.
+- Test if Content type is a text
+- Simple event bus objects with extensions on `EventBus`
+
 ## 0.1.12
 
 - Allow logging to console only (suitable for Flutter Web) by calling `DebugLogger.console()` factory constructor.
