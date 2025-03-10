@@ -1,3 +1,7 @@
+## 0.1.14
+
+- Add missing documentation
+
 ## 0.1.13
 
 - Fix clearing log files.
