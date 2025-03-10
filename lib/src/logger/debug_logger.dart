@@ -18,7 +18,9 @@ class DebugLogger extends AcLogger {
 
   final bool consoleOutputOnly;
 
-  /// Creates/returns a single logger with given name. Optionally, a level, a multi file output, a filter and a printer can be provided.
+  /// Creates/returns a single logger with given [name]. Optionally, a [level], a multi file [output],
+  /// a [filter] and a [printer] can be provided.
+  ///
   /// If you need multiple instances, use [DebugLogger.instantiate()] constructor.
   factory DebugLogger({
     required String name,
@@ -30,6 +32,10 @@ class DebugLogger extends AcLogger {
   }) =>
       AcLogger.singleton('$name$id', () => DebugLogger.instantiate(name: name, id: id, level: level, output: output, filter: filter, printer: printer, consoleOutputOnly: false));
 
+  /// Creates/returns a single logger with given name. The output is only on console, not to file(s).
+  /// Optionally, a [level], a [filter] and a [printer] can be provided.
+  ///
+  /// If you need multiple instances, use [DebugLogger.instantiate(consoleOutputOnly: true)] constructor.
   factory DebugLogger.console({
     required String name,
     String? id,

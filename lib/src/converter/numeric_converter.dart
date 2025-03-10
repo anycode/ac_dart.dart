@@ -12,6 +12,11 @@ import 'package:pgsql_annotation/pgsql_annotation.dart';
 class NumericConverter implements PgSqlConverter<double, Object> {
   const NumericConverter();
 
+  ///
+  /// Converts a [json] object from PgSql to a double.
+  ///
+  /// If [json] is a num, it's cast to double.
+  /// If [json] is a String, it's parsed to double. if it's not possible to parse the input, returns 0.0.
   @override
   double fromPgSql(Object json) {
     if (json is num) {
@@ -23,6 +28,10 @@ class NumericConverter implements PgSqlConverter<double, Object> {
     }
   }
 
+  ///
+  /// Converts a [number] double to a String for PgSql.
+  ///
+  /// It simply calls toString() on the double.
   @override
   String toPgSql(double number) => number.toString();
 }
@@ -39,12 +48,20 @@ class NumericConverter implements PgSqlConverter<double, Object> {
 class NumericListConverter implements PgSqlConverter<List<double>, List<Object>> {
   const NumericListConverter();
 
+  ///
+  /// Converts a [json] list of objects from PgSql to a list of doubles.
+  ///
+  /// Each element in [json] is converted using [NumericConverter.fromPgSql].
   @override
   List<double> fromPgSql(List<Object> json) {
     const nc = NumericConverter();
     return json.map((input) => nc.fromPgSql(input)).toList();
   }
 
+  ///
+  /// Converts a [numbers] list of doubles to a list of Strings for PgSql.
+  ///
+  /// Each number in [numbers] is converted using [NumericConverter.toPgSql].
   @override
   List<String> toPgSql(List<double> numbers) {
     const nc = NumericConverter();

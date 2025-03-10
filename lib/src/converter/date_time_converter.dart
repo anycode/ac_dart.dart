@@ -33,6 +33,12 @@ class DateTimeConverter implements JsonConverter<DateTime, Object>, PgSqlConvert
   /// Maximal datetime value used as `infinity`
   static DateTime maxDateTime = DateTime.utc(275760, 09, 13);
 
+
+  /// Converts [json] object to [DateTime]. [json] can be [DateTime] or a string representation of [DateTime].
+  ///
+  /// If it's `-infinity` or `infinity` returns [minDateTime] or [maxDateTime] respectively.
+  /// Otherwise parses [json] as [DateTime] and converts it to UTC or local time based on [utc] flag.
+  ///
   @override
   DateTime fromJson(Object json) {
     if (json is DateTime) {
@@ -51,6 +57,11 @@ class DateTimeConverter implements JsonConverter<DateTime, Object>, PgSqlConvert
     }
   }
 
+  /// Converts [dateTime] to [String].
+  ///
+  /// If [dateTime] is [minDateTime] or [maxDateTime] returns `-infinity` or `infinity` respectively.
+  /// Otherwise converts [dateTime] to UTC or local time based on [utc] flag and returns ISO 8601 string with time zone designator.
+  ///
   @override
   String toJson(DateTime dateTime) {
     if (dateTime == minDateTime) {
@@ -66,11 +77,13 @@ class DateTimeConverter implements JsonConverter<DateTime, Object>, PgSqlConvert
     }
   }
 
+  /// Converts [object] from PgSql to [DateTime] just like JSON.
   @override
   DateTime fromPgSql(Object object) => fromJson(object);
 
+  /// Converts [dateTime] to representation suitable for storing in PgSql (just like JSON).
   @override
-  String toPgSql(DateTime datetime) => toJson(datetime);
+  String toPgSql(DateTime dateTime) => toJson(dateTime);
 }
 
 ///
@@ -89,21 +102,29 @@ class DateTimeListConverter implements JsonConverter<List<DateTime>, Object>, Pg
   /// pass `utc: false`
   const DateTimeListConverter({this.utc = true});
 
+  /// Converts [json] to [List<DateTime>].
+  ///
+  /// Converts each element of [json] to [DateTime] using [DateTimeConverter].
   @override
   List<DateTime> fromJson(Object json) {
     final converter = DateTimeConverter(utc: utc);
     return (json as List).map((input) => converter.fromJson(input)).toList();
   }
 
+  /// Converts [datesTimes] to [List<String>].
+  ///
+  /// Converts each element of [datesTimes] to [String] using [DateTimeConverter].
   @override
   List<String> toJson(List<DateTime> datesTimes) {
     final converter = DateTimeConverter(utc: utc);
     return datesTimes.map((dateTime) => converter.toJson(dateTime)).toList();
   }
 
+  /// Converts [object] from PgSql to [List<DateTime>] just like JSON.
   @override
   List<DateTime> fromPgSql(List<Object> object) => fromJson(object);
 
+  /// Converts [datesTimes] to representation suitable for storing in PgSql (just like JSON).
   @override
   List<String> toPgSql(List<DateTime> datesTimes) => toJson(datesTimes);
 }
@@ -128,11 +149,15 @@ class DateConverter implements JsonConverter<DateTime, Object>, PgSqlConverter<D
 
   // DateTimes can represent time values that are at a distance of at most 100,000,000
   // days from epoch (1970-01-01 UTC): -271821-04-20 to 275760-09-13.
-  /// Minimal datetime value used as `-infinity`
+  /// Minimal datetime value represents `-infinity`
   static DateTime minDateTime = DateTime.utc(-271821, 04, 20);
-  /// Maximal datetime value used as `infinity`
+  /// Maximal datetime value represents `infinity`
   static DateTime maxDateTime = DateTime.utc(275760, 09, 13);
 
+  /// Converts [json] to [DateTime].
+  ///
+  /// If [json] is [DateTime] returns it as local time.
+  /// If [json] is [String] and equals to `-infinity` or `infinity` returns [minDateTime] or [maxDateTime] respectively.
   @override
   DateTime fromJson(Object json) {
     if (json is DateTime) {
@@ -150,6 +175,10 @@ class DateConverter implements JsonConverter<DateTime, Object>, PgSqlConverter<D
     }
   }
 
+  /// Converts [dateTime] to [String].
+  ///
+  /// If [dateTime] is [minDateTime] or [maxDateTime] returns `-infinity` or `infinity` respectively.
+  /// Otherwise converts [dateTime] to local time and returns formatted string.
   @override
   String toJson(DateTime dateTime) {
     if (dateTime == minDateTime) {
@@ -161,9 +190,11 @@ class DateConverter implements JsonConverter<DateTime, Object>, PgSqlConverter<D
     }
   }
 
+  /// Converts [pgsql] from PgSql to [DateTime] just like JSON.
   @override
   DateTime fromPgSql(Object pgsql) => fromJson(pgsql);
 
+  /// Converts [dateTime] to representation suitable for storing in PgSql (just like JSON).
   @override
   String toPgSql(DateTime dateTime) => toJson(dateTime);
 }
@@ -180,23 +211,31 @@ class DateConverter implements JsonConverter<DateTime, Object>, PgSqlConverter<D
 class DateListConverter implements JsonConverter<List<DateTime>, Object>, PgSqlConverter<List<DateTime>, List<Object>> {
   const DateListConverter();
 
+  /// Converts [json] to [List<DateTime>].
+  ///
+  /// Converts each element of [json] to [DateTime] using [DateConverter].
   @override
   List<DateTime> fromJson(Object json) {
     const converter = DateConverter();
     return (json as List).map((input) => converter.fromJson(input)).toList();
   }
 
+  /// Converts [dates] to [List<String>].
+  ///
+  /// Converts each element of [dates] to [String] using [DateConverter].
   @override
-  List<String> toJson(List<DateTime> datesTimes) {
+  List<String> toJson(List<DateTime> dates) {
     const converter = DateConverter();
-    return datesTimes.map((dateTime) => converter.toJson(dateTime)).toList();
+    return dates.map((dateTime) => converter.toJson(dateTime)).toList();
   }
 
+  /// Converts [object] from PgSql to [List<DateTime>] just like JSON.
   @override
   List<DateTime> fromPgSql(List<Object> object) => fromJson(object);
 
+  /// Converts [dates] to representation suitable for storing in PgSql (just like JSON).
   @override
-  List<String> toPgSql(List<DateTime> datesTimes) => toJson(datesTimes);
+  List<String> toPgSql(List<DateTime> dates) => toJson(dates);
 }
 
 ///
@@ -206,8 +245,8 @@ class DateListConverter implements JsonConverter<List<DateTime>, Object>, PgSqlC
 ///  @TimeConverter()
 ///  DateTime time;
 ///  ```
-///  Can be used to store time excluding seconds (use [TimeConverter.hm()]),
-///  or time including seconds (use [TimeConverter.hms()])
+///  Can be used to store time excluding seconds (use [TimeConverter()]),
+///  or time including seconds (use [TimeConverter(includeSeconds: true)])
 ///
 ///  If the time is already of DateTime type return it, otherwise try to parse String.
 ///  It's handy when processing JSON-like Map where datetime is already preprocessed by caller (e.g. database driver)
@@ -222,6 +261,10 @@ class TimeConverter implements JsonConverter<DateTime, Object>, PgSqlConverter<D
   /// pass `includeSeconds: true`
   const TimeConverter({this.includeSeconds = false});
 
+  /// Converts [json] to [DateTime].
+  ///
+  /// If [json] is [DateTime] returns it as local time.
+  /// If [json] is [String] parses it as time and returns it as local time.
   @override
   DateTime fromJson(Object json) {
     if (json is DateTime) {
@@ -233,16 +276,21 @@ class TimeConverter implements JsonConverter<DateTime, Object>, PgSqlConverter<D
     }
   }
 
+  /// Converts [dateTime] to [String].
+  ///
+  /// Returns formatted string based on [includeSeconds] flag.
   @override
   String toJson(DateTime dateTime) {
     return includeSeconds ? _formatHms.format(dateTime.toLocal()) : _formatHm.format(dateTime.toLocal());
   }
 
+  /// Converts [object] from PgSql to [DateTime] just like JSON.
   @override
-  DateTime fromPgSql(Object pgsql) => fromJson(pgsql);
+  DateTime fromPgSql(Object object) => fromJson(object);
 
+  /// Converts [time] to representation suitable for storing in PgSql (just like JSON).
   @override
-  String toPgSql(DateTime dateTime) => toJson(dateTime);
+  String toPgSql(DateTime time) => toJson(time);
 }
 
 ///
@@ -261,21 +309,29 @@ class TimeListConverter implements JsonConverter<List<DateTime>, List<Object>>, 
   /// pass `includeSeconds: true`
   const TimeListConverter({this.includeSeconds = false});
 
+  /// Converts [json] to [List<DateTime>].
+  ///
+  /// Converts each element of [json] to [DateTime] using [TimeConverter].
   @override
   List<DateTime> fromJson(List<Object> json) {
     final converter = TimeConverter(includeSeconds: includeSeconds);
     return json.map((input) => converter.fromJson(input)).toList();
   }
 
+  /// Converts [datesTimes] to [List<String>].
+  ///
+  /// Converts each element of [datesTimes] to [String] using [TimeConverter].
   @override
   List<String> toJson(List<DateTime> datesTimes) {
     final converter = TimeConverter(includeSeconds: includeSeconds);
     return datesTimes.map((dateTime) => converter.toJson(dateTime)).toList();
   }
 
+  /// Converts [object] from PgSql to [List<DateTime>] just like JSON.
   @override
   List<DateTime> fromPgSql(List<Object> object) => fromJson(object);
 
+  /// Converts [times] to representation suitable for storing in PgSql (just like JSON).
   @override
-  List<Object> toPgSql(List<DateTime> datesTimes) => toJson(datesTimes);
+  List<Object> toPgSql(List<DateTime> times) => toJson(times);
 }

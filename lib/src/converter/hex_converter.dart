@@ -11,13 +11,11 @@ import 'package:pgsql_annotation/pgsql_annotation.dart';
 class HexConverter implements PgSqlConverter<List<int>, String> {
   const HexConverter();
 
+  /// Convert string encoded bytes to list of bytes.
   @override
-  List<int> fromPgSql(String hexString) {
-    return HEX.decode(hexString.substring(2));
-  }
+  List<int> fromPgSql(String hexString) => HEX.decode(hexString.substring(2));
 
+  /// Convert list of bytes to string encoded representation.
   @override
-  String toPgSql(List<int> bytes) {
-    return '\\x' + HEX.encode(bytes);
-  }
+  String toPgSql(List<int> bytes) => '\\x${HEX.encode(bytes)}';
 }

@@ -30,14 +30,18 @@ extension DateTimeExt on DateTime {
   DateTime withDate(DateTime date) => DateTime(date.year, date.month, date.day, hour, minute, second, millisecond, microsecond);
 
   /// Returns number of quarter based on month. Months Jan-Mar = 1, Apr-Jun = 2, Jul-Sep = 3, Oct-Dec = 4
-  /// Pozn: pokud je rozsireni povoleny, generuje se chybne kod pro JSON serializaci
-  /// pouzivajici @DateTimeConverter. Generovany kod nevola konvertor
+  ///
+  /// nb: if this extension is enabled, code generated for `@JsonSerializable` properties annotated with `@DateTimeConverter`
+  /// is wrong and don't call the converter.
   int get quarter => month <= 3 ? 1 : month <= 6 ? 2 : month <= 9 ? 3 : month <= 12 ? 4 : -1;
 
-  // prozatim pouzivam funkci pro ziskani ctvrtleti
+  /// Use this method to get the quarter to overcome problem with `quarter` getter.
   int getQuarter() => month <= 3 ? 1 : month <= 6 ? 2 : month <= 9 ? 3 : month <= 12 ? 4 : -1;
 
+  /// Truncate date to month
+  @Deprecated('Use `dateTime.trunc(DateTimeExt.unitMonth)` instead')
   DateTime dateTimeMonth(DateTime date) => DateTime(date.year, date.month);
+
   /// Constant unit used to trunc date to years
   static const String unitYear = 'year';
   /// Constant unit used to trunc date to quarters

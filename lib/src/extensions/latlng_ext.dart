@@ -64,7 +64,10 @@ extension LatLngExt on LatLng {
     }
   }
 
-  String format() {
-    return '${FormatLatitude().formatDMS(latitude)} ${FormatLongitude().formatDMS(longitude)}';
-  }
+  /// Format [LatLng] to string in DMS format
+  /// Example:
+  /// ```dart
+  /// LatLng(50.763849890, 16.3423545).format(); // 50°45'49.86"N, 16°20'32.48"E
+  /// ```
+  String format() => '${FormatLatitude().formatDMS(latitude)} ${FormatLongitude().formatDMS(longitude)}';
 }
