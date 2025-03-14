@@ -55,14 +55,27 @@ class FormatLongitude extends _FormatLL {
 
 /// Global shorthand to `FormatLatitude({emptyValue: ''}).formatDMS(num? latitude, decimal: int)`
 ///
-/// Format a number as Geo latitude, positive values on northern hemisphere, negative on southern hemisphere
-/// e.g. formatLatitude(45.569) => 45°34'8.4"N
+/// Format a number as Geo latitude, positive values on northern hemisphere, negative on southern hemisphere, e.g.
+/// ```dart
+/// formatLatitude(45.569) => 45°34'8.4"N
 /// formatLatitude(-45.569) => 45°34'8.4"S
+/// ```
 String formatLatitude(double lat) => FormatLatitude().formatDMS(lat);
 
 /// Global shorthand to `FormatLongitude({emptyValue: ''}).formatDMS(num? longitude, decimal: int)`
 ///
-/// Format a number as Geo longitude, positive values on eastern hemisphere, negative on western hemisphere
-/// e.g. formatLongitude(45.569) => 45°34'8.4"E
+/// Format a number as Geo longitude, positive values on eastern hemisphere, negative on western hemisphere, e.g.
+/// ```dart
+/// formatLongitude(45.569) => 45°34'8.4"E
 /// formatLongitude(-45.569) => 45°34'8.4"W
+/// ```
 String formatLongitude(double lng) => FormatLongitude().formatDMS(lng);
+
+/// Global shorthand to `formatLatitude(double lat), formatLongitude(double lng)`
+///
+/// Format a number as Geo latitude and longitude, e.g.
+/// ```dart
+/// formatLatLng(45.569, 12.345) => 45°34'8.4"N, 12°20'42.0"E
+/// formatLatLng(-45.569, -12.345) => 45°34'8.4"S, 12°20'42.0"W
+/// ```
+String formatLatLng(double lat, double lng) => '${formatLatitude(lat)}, ${formatLongitude(lng)}';
