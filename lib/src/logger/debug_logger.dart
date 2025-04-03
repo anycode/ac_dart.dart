@@ -62,7 +62,7 @@ class DebugLogger extends AcLogger {
                 _outputs.putIfAbsent(name, () => output ?? MultiFileOutput(file: File('logs/$name.log'))),
                 ConsoleOutput(),
               ]),
-          filter: filter ?? DevelopmentFilter(),
+          filter: filter ?? ProductionFilter(),
           printer: printer ?? DebugPrinter(prefix: id),
         );
 
