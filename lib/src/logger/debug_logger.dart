@@ -79,9 +79,9 @@ class DebugPrinter extends LogPrinter {
   List<String> log(LogEvent event) {
     return [
       ...stringifyMessage(event.message).split('\n').map((line) => '$_prefix${event.time} | ${event.level.name} | $line'),
-      if (event.error != null) '$_prefix${event.time} | ${event.level.name} | error:\n',
+      if (event.error != null) '$_prefix${event.time} | ${event.level.name} | error:',
       if (event.error != null) ...event.error.toString().split('\n').map((line) => '$_prefix${event.time} | ${event.level.name} |   $line'),
-      if (event.stackTrace != null) '$_prefix${event.time} | ${event.level.name} | stack trace: \n',
+      if (event.stackTrace != null) '$_prefix${event.time} | ${event.level.name} | stack trace:',
       if (event.stackTrace != null)
         ...event.stackTrace.toString().split('\n').map((line) => '$_prefix${event.time} | ${event.level.name} |   $line'),
     ];
