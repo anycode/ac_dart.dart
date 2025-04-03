@@ -1,3 +1,7 @@
+## 0.1.16
+
+- Use `ProductionFilter` to enable logging in non-development environments
+
 ## 0.1.15
 
 - Remove extra \n from logger
