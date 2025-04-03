@@ -1,3 +1,9 @@
+## 0.1.15
+
+- Remove extra \n from logger
+- Add `formatLatLng(double, double)` function
+- Move capitalize String extension method from ac_flutter
+
 ## 0.1.14
 
 - Add missing documentation
