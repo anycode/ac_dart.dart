@@ -1,3 +1,7 @@
+## 0.1.17
+
+- Update dep on ac_ranges
+
 ## 0.1.16
 
 - Use `ProductionFilter` to enable logging in non-development environments
