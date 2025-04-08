@@ -17,15 +17,19 @@ extension CronExt on Cron {
   /// takes one extra argument to identify the task in logs.
   void logSchedule(Schedule schedule, Task task, [String taskName = 'unnamed']) {
     logger.i('Cron task $taskName scheduled to ${schedule.format()}');
-    this.schedule(schedule, () {
+    this.schedule(schedule, () async {
       logger.i('Cron task $taskName scheduled to ${schedule.format()} started at ${DateTime.now()}');
-      final result = task.call();
-      if (result is Future) {
-        result.then((value) {
-          logger.i('Cron task $taskName scheduled to ${schedule.format()} finished at ${DateTime.now()} with result $value');
-        });
-      } else {
-        logger.i('Cron task $taskName scheduled to ${schedule.format()} finished at ${DateTime.now()} with result $result');
+      try {
+        final result = await task.call();
+        if (result is Future) {
+          result.then((value) {
+            logger.i('Cron task $taskName scheduled to ${schedule.format()} finished at ${DateTime.now()} with result $value');
+          });
+        } else {
+          logger.i('Cron task $taskName scheduled to ${schedule.format()} finished at ${DateTime.now()} with result $result');
+        }
+      } catch(e,st) {
+        logger.f('Cron task $taskName scheduled to ${schedule.format()} failed at ${DateTime.now()}', error: e, stackTrace: st);
       }
     });
   }
