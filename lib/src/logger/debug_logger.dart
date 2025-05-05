@@ -30,7 +30,18 @@ class DebugLogger extends AcLogger {
     LogFilter? filter,
     LogPrinter? printer,
   }) =>
-      AcLogger.singleton('$name$id', () => DebugLogger.instantiate(name: name, id: id, level: level, output: output, filter: filter, printer: printer, consoleOutputOnly: false));
+      AcLogger.singleton(
+        name,
+        () => DebugLogger.instantiate(
+          name: name,
+          id: id,
+          level: level,
+          output: output,
+          filter: filter,
+          printer: printer,
+          consoleOutputOnly: false,
+        ),
+      );
 
   /// Creates/returns a single logger with given name. The output is only on console, not to file(s).
   /// Optionally, a [level], a [filter] and a [printer] can be provided.

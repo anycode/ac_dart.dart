@@ -14,19 +14,25 @@ class AcLogger extends Logger {
   lgg.Logger? _loggingLogger;
 
   /// Returns an existing logger with given name. If it does not exists, creates a new one lazily with a callback function.
-  static singleton<T extends AcLogger>(String name, T Function() logger) => _loggers.putIfAbsent(name, logger);
+  static T singleton<T extends AcLogger>(String name, T Function() logger) {
+    if (! _loggers.containsKey(name)) {
+      _loggers[name] = logger();
+    }
+    return _loggers[name] as T;
+  }
 
   /// Creates/returns a single logger with given name. Optionally, a level, an output, a filter and a printer can be provided.
   /// If you need multiple instances, use [AcLogger.instantiate()] constructor.
   factory AcLogger({required String name, Level? level, LogOutput? output, LogFilter? filter, LogPrinter? printer}) => singleton(
-      name,
-      () => AcLogger.instantiate(
-            name: name,
-            level: level,
-            output: output,
-            filter: filter,
-            printer: printer ?? PrettyPrinter(stackTraceBeginIndex: 1, methodCount: 3, errorMethodCount: 10),
-          ));
+        name,
+        () => AcLogger.instantiate(
+          name: name,
+          level: level,
+          output: output,
+          filter: filter,
+          printer: printer ?? PrettyPrinter(stackTraceBeginIndex: 1, methodCount: 3, errorMethodCount: 10),
+        ),
+      );
 
   /// Creates new instance of [AcLogger]. Each call creates new instance, even if name is the same.
   /// If you need single instance, use [AcLogger()] factory constructor.
