@@ -23,7 +23,7 @@ class AcLogger extends Logger {
 
   /// Creates/returns a single logger with given name. Optionally, a level, an output, a filter and a printer can be provided.
   /// If you need multiple instances, use [AcLogger.instantiate()] constructor.
-  factory AcLogger({required String name, Level? level, LogOutput? output, LogFilter? filter, LogPrinter? printer}) => singleton(
+  factory AcLogger({required String name, Level level = Level.info, LogOutput? output, LogFilter? filter, LogPrinter? printer}) => singleton(
         name,
         () => AcLogger.instantiate(
           name: name,
@@ -38,7 +38,7 @@ class AcLogger extends Logger {
   /// If you need single instance, use [AcLogger()] factory constructor.
   AcLogger.instantiate({
     required this.name,
-    this.level,
+    this.level = Level.info,
     super.output,
     super.filter,
     super.printer,
@@ -66,7 +66,7 @@ class AcLogger extends Logger {
     lgg.hierarchicalLoggingEnabled = true;
     _loggingLogger = logger;
     _loggingLogger!.level = _invertLevel(level);
-    // For some reason, all loggers leak into the listener, therefore we filter it once more nby name
+    // For some reason, all loggers leak into the listener, therefore we filter it once more by name
     _loggingLogger!.onRecord
         .where((event) => event.loggerName == _loggingLogger!.name)
         .listen((event) => log(_convertLevel(event.level), event.message, error: event.error, stackTrace: event.stackTrace));
@@ -84,7 +84,7 @@ class AcLogger extends Logger {
       lgg.Level.WARNING => Level.warning,
       lgg.Level.SEVERE => Level.error,
       lgg.Level.SHOUT => Level.fatal,
-      _ => Level.off,
+      _ => Level.all,
     };
   }
 
@@ -98,7 +98,7 @@ class AcLogger extends Logger {
       Level.warning => lgg.Level.WARNING,
       Level.error => lgg.Level.SEVERE,
       Level.fatal => lgg.Level.SHOUT,
-      _ => lgg.Level.OFF,
+      _ => lgg.Level.ALL,
     };
   }
 }
