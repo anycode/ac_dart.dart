@@ -1,3 +1,9 @@
+## 0.1.20
+
+- Default logging level set to `Level.info`. 
+- Set logging level to `Level.all` instead of `Level.off` when converting unknown or 
+  unset level value.
+
 ## 0.1.19
 
 - Fix handling multiple loggers with same name
