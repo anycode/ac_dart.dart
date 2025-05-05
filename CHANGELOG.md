@@ -1,3 +1,7 @@
+## 0.1.19
+
+- Fix handling multiple loggers with same name
+
 ## 0.1.18
 
 - Log failures in cron tasks
