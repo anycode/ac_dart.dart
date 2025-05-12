@@ -1,3 +1,7 @@
+## 0.1.21
+
+- Add `equal()` method to check equality of two objects
+
 ## 0.1.20
 
 - Default logging level set to `Level.info`. 
