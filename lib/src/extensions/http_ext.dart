@@ -36,4 +36,11 @@ extension ContentTypeExt on ContentType {
   /// Test whether the content type is a text
   // maybe too lose, possible should be more strict
   bool get isText => ! isBinary;
+
+  bool equals(ContentType? other) {
+    return primaryType == other?.primaryType &&
+        subType == other?.subType &&
+        parameters['charset'] == other?.parameters['charset'];
+
+  }
 }
