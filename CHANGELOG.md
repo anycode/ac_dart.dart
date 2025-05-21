@@ -1,3 +1,7 @@
+## 0.1.22
+
+- Update `intl` package to 0.20
+
 ## 0.1.21
 
 - Add `equal()` method to check equality of two objects
