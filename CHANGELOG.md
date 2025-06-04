@@ -1,3 +1,9 @@
+## 0.1.23
+
+- Switch analysis options to `package:lints/recommended` and enable trailing commas preservation.
+- Make `DebugLogger` optional in `logSchedule` and remove UUID-based default logger.
+- Refactor `DebugLogger` to support separate file and console outputs, introduce `files` and `console` factory constructors, and improve `MultiOutput` handling.
+
 ## 0.1.22
 
 - Update `intl` package to 0.20
