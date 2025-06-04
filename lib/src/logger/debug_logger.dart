@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:cross_file/cross_file.dart';
 import 'package:logger/logger.dart';
-import 'package:path/path.dart';
+import 'package:path/path.dart' as path;
 
 import 'ac_logger.dart';
 
@@ -14,9 +14,7 @@ import 'ac_logger.dart';
 class DebugLogger extends AcLogger {
   /// List of [MultiFileOutput] outputs
   /// All debug loggers with same name share the same output
-  static final _outputs = <String, MultiFileOutput>{};
-
-  final bool consoleOutputOnly;
+  static final _fileOutputs = <String, MultiFileOutput>{};
 
   /// Creates/returns a single logger with given [name]. Optionally, a [level], a multi file [output],
   /// a [filter] and a [printer] can be provided.
@@ -36,17 +34,43 @@ class DebugLogger extends AcLogger {
           name: name,
           id: id,
           level: level,
-          output: output,
+          output: MultiOutput([
+            _fileOutputs.putIfAbsent(name, () => output ?? MultiFileOutput(file: File('logs/$name.log'))),
+            ConsoleOutput(),
+          ]),
           filter: filter,
           printer: printer,
-          consoleOutputOnly: false,
+        ),
+      );
+
+  /// Creates/returns a single logger with given name. The output is only to files, not on console.
+  /// Optionally, a [level], a [filter] and a [printer] can be provided.
+  ///
+  /// If you need multiple instances, use [DebugLogger.instantiate(output: MultiFileOutput()] constructor.
+  factory DebugLogger.files({
+    required String name,
+    String? id,
+    Level? level,
+    MultiFileOutput? output,
+    LogFilter? filter,
+    LogPrinter? printer,
+  }) =>
+      AcLogger.singleton(
+        name,
+        () => DebugLogger.instantiate(
+          name: name,
+          id: id,
+          level: level,
+          filter: filter,
+          printer: printer,
+          output: _fileOutputs.putIfAbsent(name, () => output ?? MultiFileOutput(file: File('logs/$name.log'))),
         ),
       );
 
   /// Creates/returns a single logger with given name. The output is only on console, not to file(s).
   /// Optionally, a [level], a [filter] and a [printer] can be provided.
   ///
-  /// If you need multiple instances, use [DebugLogger.instantiate(consoleOutputOnly: true)] constructor.
+  /// If you need multiple instances, use [DebugLogger.instantiate(output: ConsoleOutput())] constructor.
   factory DebugLogger.console({
     required String name,
     String? id,
@@ -54,30 +78,44 @@ class DebugLogger extends AcLogger {
     LogFilter? filter,
     LogPrinter? printer,
   }) =>
-      AcLogger.singleton('$name$id', () => DebugLogger.instantiate(name: name, id: id, level: level, filter: filter, printer: printer, consoleOutputOnly: true));
+      AcLogger.singleton(
+        name,
+        () => DebugLogger.instantiate(
+          name: name,
+          id: id,
+          level: level,
+          filter: filter,
+          printer: printer,
+          output: ConsoleOutput(),
+        ),
+      );
 
   /// Creates new instance of [DebugLogger]. Each call creates new instance, even if name is the same.
   /// If you need single instance, use [DebugLogger()] factory constructor.
+  ///
+  /// When [output] is not specified, [MultiOutput] is used by default, which will output to
+  /// files and to console. If you want to output to files only, and don't want to provide own [output],
+  /// set [useConsoleOutput] to false. If [output] is provided, value of [useConsoleOutput] is ignored
+  /// and it's caller's decision what the [output] is.
   DebugLogger.instantiate({
     required super.name,
     String? id,
     super.level,
-    MultiFileOutput? output,
+    LogOutput? output,
     LogFilter? filter,
     LogPrinter? printer,
-    this.consoleOutputOnly = false,
+    bool useConsoleOutput = true,
   }) : super.instantiate(
-          output: consoleOutputOnly
-              ? ConsoleOutput()
-              : MultiOutput([
-                _outputs.putIfAbsent(name, () => output ?? MultiFileOutput(file: File('logs/$name.log'))),
-                ConsoleOutput(),
+          output: output ??
+              MultiOutput([
+                _fileOutputs.putIfAbsent(name, () => MultiFileOutput(file: File('logs/$name.log'))),
+                if (useConsoleOutput) ConsoleOutput(),
               ]),
           filter: filter ?? ProductionFilter(),
           printer: printer ?? DebugPrinter(prefix: id),
         );
 
-  MultiFileOutput? get output => consoleOutputOnly ? null : _outputs[name]!;
+  MultiFileOutput? get output => _fileOutputs[name];
 }
 
 /// Default [LogPrinter] for [DebugLogger]
@@ -135,9 +173,9 @@ class MultiFileOutput extends FileOutput {
   }
 
   void _init() {
-    final base = basenameWithoutExtension(file.path);
-    final ext = extension(file.path);
-    final dir = dirname(file.path);
+    final base = path.basenameWithoutExtension(file.path);
+    final ext = path.extension(file.path);
+    final dir = path.dirname(file.path);
     _files.clear();
     if (maxFiles > 0) {
       for (int i = 0; i < maxFiles; i++) {
