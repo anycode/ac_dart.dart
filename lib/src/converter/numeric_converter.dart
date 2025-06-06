@@ -20,7 +20,7 @@ class NumericConverter implements PgSqlConverter<double, Object> {
   @override
   double fromPgSql(Object json) {
     if (json is num) {
-      return json as double;
+      return json.toDouble();
     } else if (json is String) {
       return double.tryParse(json) ?? 0.0;
     } else {
