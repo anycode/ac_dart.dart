@@ -1,3 +1,8 @@
+## 0.1.24
+
+- Upgrade dep on ac_ranges
+- Add tests for converters
+
 ## 0.1.23
 
 - Switch analysis options to `package:lints/recommended` and enable trailing commas preservation.
