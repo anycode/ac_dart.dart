@@ -1,6 +1,10 @@
+## 0.1.25
+
+- Upgrade dep on `ac_ranges`
+
 ## 0.1.24
 
-- Upgrade dep on ac_ranges
+- Upgrade dep on `ac_ranges`
 - Add tests for converters
 
 ## 0.1.23
