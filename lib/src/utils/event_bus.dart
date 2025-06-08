@@ -1,3 +1,19 @@
+/*
+ * Copyright 2025 Martin Edlman - Anycode <ac@anycode.dev>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import 'package:event_bus/event_bus.dart';
 
 /// Global event bus for general purpose.
@@ -45,32 +61,32 @@ extension EventBusExt on EventBus {
   /// Fires an [ObjectCreated] event with the given [object].
   ///
   /// This method is a convenience wrapper around `fire(ObjectCreated(object))`.
-  fireObjectCreated<T>(T object) => fire(ObjectCreated(object));
+  void fireObjectCreated<T>(T object) => fire(ObjectCreated(object));
 
   /// Fires an [ObjectUpdated] event with the given [object].
   ///
   /// This method is a convenience wrapper around `fire(ObjectUpdated(object))`.
-  fireObjectUpdated<T>(T object) => fire(ObjectUpdated(object));
+  void fireObjectUpdated<T>(T object) => fire(ObjectUpdated(object));
 
   /// Fires an [ObjectDeleted] event with the given [object].
   ///
   /// This method is a convenience wrapper around `fire(ObjectDeleted(object))`.
-  fireObjectDeleted<T>(T object) => fire(ObjectDeleted(object));
+  void fireObjectDeleted<T>(T object) => fire(ObjectDeleted(object));
 
   /// Fires a [BusData] event with the given [uniqueKey] and [data].
   ///
   /// This method is a convenience wrapper around `fire(BusData(uniqueKey, data))`.
-  fireBusData<T>(String uniqueKey, T data) => fire(BusData(uniqueKey, data));
+  void fireBusData<T>(String uniqueKey, T data) => fire(BusData(uniqueKey, data));
 
   /// Fires a [BusDataList] event with the given [uniqueKey] and [data].
   ///
   /// This method is a convenience wrapper around `fire(BusDataList(uniqueKey, data))`.
-  fireBusDataList<T>(String uniqueKey, List<T> data) => fire(BusDataList(uniqueKey, data));
+  void fireBusDataList<T>(String uniqueKey, List<T> data) => fire(BusDataList(uniqueKey, data));
 
   /// Fires a [BusSignal] event with the given optional [uniqueKey].
   ///
   /// This method is a convenience wrapper around `fire(BusSignal<T>(uniqueKey))`.
-  fireBusSignal<T>([int? uniqueKey]) => fire(BusSignal<T>(uniqueKey));
+  void fireBusSignal<T>([int? uniqueKey]) => fire(BusSignal<T>(uniqueKey));
 
   /// Returns a stream of [ObjectCreated] events.
   ///
