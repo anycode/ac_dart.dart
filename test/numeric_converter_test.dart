@@ -22,34 +22,34 @@ void main() {
     test('Test conversion of numeric value to double', () {
       const NumericConverter converter = NumericConverter();
 
-      expect(converter.fromPgSql(123), equals(123.0));
-      expect(converter.fromPgSql(123.45), equals(123.45));
+      expect(converter.fromJson(123), equals(123.0));
+      expect(converter.fromJson(123.45), equals(123.45));
     });
 
     test('Test conversion of string to double', () {
       const NumericConverter converter = NumericConverter();
 
-      expect(converter.fromPgSql('123.45'), equals(123.45));
-      expect(converter.fromPgSql('-123.45'), equals(-123.45));
+      expect(converter.fromJson('123.45'), equals(123.45));
+      expect(converter.fromJson('-123.45'), equals(-123.45));
     });
 
     test('Test conversion of invalid string', () {
       const NumericConverter converter = NumericConverter();
 
-      expect(converter.fromPgSql('neplatná_hodnota'), equals(0.0));
+      expect(converter.fromJson('neplatná_hodnota'), equals(0.0));
     });
 
     test('Test conversion of double to string', () {
       const NumericConverter converter = NumericConverter();
 
-      expect(converter.toPgSql(123.45), equals('123.45'));
-      expect(converter.toPgSql(-123.45), equals('-123.45'));
+      expect(converter.toJson(123.45), equals('123.45'));
+      expect(converter.toJson(-123.45), equals('-123.45'));
     });
 
     test('Test error handling', () {
       const NumericConverter converter = NumericConverter();
 
-      expect(() => converter.fromPgSql(true), throwsException);
+      expect(() => converter.fromJson(true), throwsException);
     });
   });
 
@@ -59,7 +59,7 @@ void main() {
       final numbers = [123, 456.78, '789.01'];
       final doubles = [123.0, 456.78, 789.01];
 
-      expect(converter.fromPgSql(numbers), equals(doubles));
+      expect(converter.fromJson(numbers), equals(doubles));
     });
 
     test('Test conversion of double list to strings', () {
@@ -67,7 +67,7 @@ void main() {
       final doubles = [123.0, 456.78, -789.01];
       final strings = ['123.0', '456.78', '-789.01'];
 
-      expect(converter.toPgSql(doubles), equals(strings));
+      expect(converter.toJson(doubles), equals(strings));
     });
   });
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import 'package:pgsql_annotation/pgsql_annotation.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 ///
 ///  NumericConverter annotation
@@ -25,7 +25,7 @@ import 'package:pgsql_annotation/pgsql_annotation.dart';
 ///  @NumericConverter()
 ///  Numeric date;
 ///
-class NumericConverter implements PgSqlConverter<double, Object> {
+class NumericConverter implements JsonConverter<double, Object> {
   const NumericConverter();
 
   ///
@@ -34,7 +34,7 @@ class NumericConverter implements PgSqlConverter<double, Object> {
   /// If [json] is a num, it's cast to double.
   /// If [json] is a String, it's parsed to double. if it's not possible to parse the input, returns 0.0.
   @override
-  double fromPgSql(Object json) {
+  double fromJson(Object json) {
     if (json is num) {
       return json.toDouble();
     } else if (json is String) {
@@ -49,7 +49,7 @@ class NumericConverter implements PgSqlConverter<double, Object> {
   ///
   /// It simply calls toString() on the double.
   @override
-  String toPgSql(double number) => number.toString();
+  String toJson(double number) => number.toString();
 }
 
 ///
@@ -61,7 +61,7 @@ class NumericConverter implements PgSqlConverter<double, Object> {
 ///  @NumericConverter()
 ///  List<Numeric> dates;
 ///
-class NumericListConverter implements PgSqlConverter<List<double>, List<Object>> {
+class NumericListConverter implements JsonConverter<List<double>, List<Object>> {
   const NumericListConverter();
 
   ///
@@ -69,9 +69,9 @@ class NumericListConverter implements PgSqlConverter<List<double>, List<Object>>
   ///
   /// Each element in [json] is converted using [NumericConverter.fromPgSql].
   @override
-  List<double> fromPgSql(List<Object> json) {
+  List<double> fromJson(List<Object> json) {
     const nc = NumericConverter();
-    return json.map((input) => nc.fromPgSql(input)).toList();
+    return json.map((input) => nc.fromJson(input)).toList();
   }
 
   ///
@@ -79,8 +79,8 @@ class NumericListConverter implements PgSqlConverter<List<double>, List<Object>>
   ///
   /// Each number in [numbers] is converted using [NumericConverter.toPgSql].
   @override
-  List<String> toPgSql(List<double> numbers) {
+  List<String> toJson(List<double> numbers) {
     const nc = NumericConverter();
-    return numbers.map((number) => nc.toPgSql(number)).toList();
+    return numbers.map((number) => nc.toJson(number)).toList();
   }
 }

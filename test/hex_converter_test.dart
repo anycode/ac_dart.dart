@@ -25,7 +25,7 @@ void main() {
       final List<int> bytes = [10, 20, 30, 40, 50];
       final String hexString = '\\x0a141e2832';
 
-      expect(converter.fromPgSql(hexString), equals(bytes));
+      expect(converter.fromJson(hexString), equals(bytes));
     });
 
     test('Test conversion from bytes to hex string', () {
@@ -33,7 +33,7 @@ void main() {
       final List<int> bytes = [10, 20, 30, 40, 50];
       final String hexString = '\\x0a141e2832';
 
-      expect(converter.toPgSql(bytes), equals(hexString));
+      expect(converter.toJson(bytes), equals(hexString));
     });
   });
 }

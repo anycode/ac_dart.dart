@@ -17,7 +17,6 @@
 import 'package:ac_dart/src/extensions/datetime_ext.dart';
 import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:pgsql_annotation/pgsql_annotation.dart';
 
 ///
 ///  Use DateTimeConverter annotation with the DateTime members, e.g.
@@ -34,7 +33,7 @@ import 'package:pgsql_annotation/pgsql_annotation.dart';
 ///  If the datetime is already of DateTime type return it, otherwise try to parse String.
 ///  It's handy when processing JSON-like Map where datetime is already preprocessed by caller (e.g. database driver)
 ///
-class DateTimeConverter implements JsonConverter<DateTime, Object>, PgSqlConverter<DateTime, Object> {
+class DateTimeConverter implements JsonConverter<DateTime, Object> {
 
   final bool utc;
 
@@ -92,14 +91,6 @@ class DateTimeConverter implements JsonConverter<DateTime, Object>, PgSqlConvert
       }
     }
   }
-
-  /// Converts [object] from PgSql to [DateTime] just like JSON.
-  @override
-  DateTime fromPgSql(Object object) => fromJson(object);
-
-  /// Converts [dateTime] to representation suitable for storing in PgSql (just like JSON).
-  @override
-  String toPgSql(DateTime dateTime) => toJson(dateTime);
 }
 
 ///
@@ -111,7 +102,7 @@ class DateTimeConverter implements JsonConverter<DateTime, Object>, PgSqlConvert
 ///  ```
 ///  See [DateTimeConverter] for details
 ///
-class DateTimeListConverter implements JsonConverter<List<DateTime>, Object>, PgSqlConverter<List<DateTime>, List<Object>> {
+class DateTimeListConverter implements JsonConverter<List<DateTime>, Object> {
   final bool utc;
 
   /// Const constructor to create DateTimeListConverter with UTC time (default). If you need local time
@@ -135,14 +126,6 @@ class DateTimeListConverter implements JsonConverter<List<DateTime>, Object>, Pg
     final converter = DateTimeConverter(utc: utc);
     return datesTimes.map((dateTime) => converter.toJson(dateTime)).toList();
   }
-
-  /// Converts [object] from PgSql to [List<DateTime>] just like JSON.
-  @override
-  List<DateTime> fromPgSql(List<Object> object) => fromJson(object);
-
-  /// Converts [datesTimes] to representation suitable for storing in PgSql (just like JSON).
-  @override
-  List<String> toPgSql(List<DateTime> datesTimes) => toJson(datesTimes);
 }
 
 ///
@@ -158,7 +141,7 @@ class DateTimeListConverter implements JsonConverter<List<DateTime>, Object>, Pg
 ///  If the date is already of DateTime type return it, otherwise try to parse String.
 ///  It's handy when processing JSON-like Map where date is already preprocessed by caller (e.g. database driver)
 ///
-class DateConverter implements JsonConverter<DateTime, Object>, PgSqlConverter<DateTime, Object> {
+class DateConverter implements JsonConverter<DateTime, Object> {
   static final DateFormat _format = DateFormat('yyyy-MM-dd');
 
   const DateConverter();
@@ -205,14 +188,6 @@ class DateConverter implements JsonConverter<DateTime, Object>, PgSqlConverter<D
       return _format.format(dateTime.toLocal());
     }
   }
-
-  /// Converts [pgsql] from PgSql to [DateTime] just like JSON.
-  @override
-  DateTime fromPgSql(Object pgsql) => fromJson(pgsql);
-
-  /// Converts [dateTime] to representation suitable for storing in PgSql (just like JSON).
-  @override
-  String toPgSql(DateTime dateTime) => toJson(dateTime);
 }
 
 ///
@@ -224,7 +199,7 @@ class DateConverter implements JsonConverter<DateTime, Object>, PgSqlConverter<D
 ///  ```
 ///  See [DateConverter] for details
 ///
-class DateListConverter implements JsonConverter<List<DateTime>, Object>, PgSqlConverter<List<DateTime>, List<Object>> {
+class DateListConverter implements JsonConverter<List<DateTime>, Object> {
   const DateListConverter();
 
   /// Converts [json] to [List<DateTime>].
@@ -244,14 +219,6 @@ class DateListConverter implements JsonConverter<List<DateTime>, Object>, PgSqlC
     const converter = DateConverter();
     return dates.map((dateTime) => converter.toJson(dateTime)).toList();
   }
-
-  /// Converts [object] from PgSql to [List<DateTime>] just like JSON.
-  @override
-  List<DateTime> fromPgSql(List<Object> object) => fromJson(object);
-
-  /// Converts [dates] to representation suitable for storing in PgSql (just like JSON).
-  @override
-  List<String> toPgSql(List<DateTime> dates) => toJson(dates);
 }
 
 ///
@@ -267,7 +234,7 @@ class DateListConverter implements JsonConverter<List<DateTime>, Object>, PgSqlC
 ///  If the time is already of DateTime type return it, otherwise try to parse String.
 ///  It's handy when processing JSON-like Map where datetime is already preprocessed by caller (e.g. database driver)
 ///
-class TimeConverter implements JsonConverter<DateTime, Object>, PgSqlConverter<DateTime, Object> {
+class TimeConverter implements JsonConverter<DateTime, Object> {
   static final DateFormat _formatHm = DateFormat.Hm();
   static final DateFormat _formatHms = DateFormat.Hms();
 
@@ -299,14 +266,6 @@ class TimeConverter implements JsonConverter<DateTime, Object>, PgSqlConverter<D
   String toJson(DateTime dateTime) {
     return includeSeconds ? _formatHms.format(dateTime.toLocal()) : _formatHm.format(dateTime.toLocal());
   }
-
-  /// Converts [object] from PgSql to [DateTime] just like JSON.
-  @override
-  DateTime fromPgSql(Object object) => fromJson(object);
-
-  /// Converts [time] to representation suitable for storing in PgSql (just like JSON).
-  @override
-  String toPgSql(DateTime time) => toJson(time);
 }
 
 ///
@@ -318,7 +277,7 @@ class TimeConverter implements JsonConverter<DateTime, Object>, PgSqlConverter<D
 ///  ```
 ///  See [TimeConverter] for details
 ///
-class TimeListConverter implements JsonConverter<List<DateTime>, List<Object>>, PgSqlConverter<List<DateTime>, List<Object>> {
+class TimeListConverter implements JsonConverter<List<DateTime>, List<Object>> {
   final bool includeSeconds;
 
   /// Const constructor used to convert time excluding seconds (default), if you need time including seconds
@@ -342,12 +301,4 @@ class TimeListConverter implements JsonConverter<List<DateTime>, List<Object>>, 
     final converter = TimeConverter(includeSeconds: includeSeconds);
     return datesTimes.map((dateTime) => converter.toJson(dateTime)).toList();
   }
-
-  /// Converts [object] from PgSql to [List<DateTime>] just like JSON.
-  @override
-  List<DateTime> fromPgSql(List<Object> object) => fromJson(object);
-
-  /// Converts [times] to representation suitable for storing in PgSql (just like JSON).
-  @override
-  List<Object> toPgSql(List<DateTime> times) => toJson(times);
 }

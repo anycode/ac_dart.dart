@@ -21,9 +21,6 @@ dependencies:
   logging: ^1.2.0
   meta: ^1.15.0
   path: ^1.9.0
-  pgsql_annotation:
-    version: ^4.9.0-wip
-    hosted: https://pub.anycode.dev
   uuid: ^4.4.2
 
 dev_dependencies:

@@ -16,7 +16,6 @@
 
 import 'package:ac_dart/ac_dart.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:pgsql_annotation/pgsql_annotation.dart';
 
 ///
 /// QuarterConverter annotation
@@ -33,7 +32,7 @@ import 'package:pgsql_annotation/pgsql_annotation.dart';
 /// @QuarterConverter()
 /// Quarter quarter;
 ///
-class QuarterConverter implements JsonConverter<DateTime, Object>, PgSqlConverter<DateTime, Object> {
+class QuarterConverter implements JsonConverter<DateTime, Object> {
   static final _quarterRE = RegExp(r'(\d{4})q(\d)', caseSensitive: false);
 
   const QuarterConverter();
@@ -55,14 +54,6 @@ class QuarterConverter implements JsonConverter<DateTime, Object>, PgSqlConverte
   /// Converts a [quarter] DateTime to a string representation in the format `yyyy'q'n`.
   @override
   String toJson(DateTime quarter) => _format(quarter);
-
-  /// Converts a [object] from PgSql to a DateTime representing the quarter.
-  @override
-  DateTime fromPgSql(Object object) => fromJson(object);
-
-  /// Converts a [quarter] DateTime to a string representation for PgSql.
-  @override
-  String toPgSql(DateTime quarter) => quarter.toIso8601String();
 
   static DateTime _parse(String input) {
     DateTime dateTime;
@@ -89,7 +80,7 @@ class QuarterConverter implements JsonConverter<DateTime, Object>, PgSqlConverte
 ///  @QuarterListConverter()
 ///  List<DateTime> dates;
 ///
-class QuarterListConverter implements JsonConverter<List<DateTime>, List<Object>>, PgSqlConverter<List<DateTime>, List<Object>> {
+class QuarterListConverter implements JsonConverter<List<DateTime>, List<Object>> {
   const QuarterListConverter();
 
   /// Converts a [json] list of objects to a list of DateTimes representing the quarters.
@@ -105,12 +96,4 @@ class QuarterListConverter implements JsonConverter<List<DateTime>, List<Object>
     const converter = QuarterConverter();
     return quarters.map((quarter) => converter.toJson(quarter)).toList();
   }
-
-  @override
-  /// Converts a [object] list from PgSql to a list of DateTimes representing the quarters.
-  List<DateTime> fromPgSql(List<Object> object) => fromJson(object);
-
-  /// Converts a [datesTimes] list of DateTimes to a list of string representations for PgSql.
-  @override
-  List<Object> toPgSql(List<DateTime> datesTimes) => datesTimes.map((quarter) => quarter.toIso8601String()).toList();
 }

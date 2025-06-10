@@ -50,14 +50,6 @@ void main() {
       expect(converter.toJson(DateTime(2020, 10, 1)), '2020q4');
     });
 
-    test('Test PgSql methods', () {
-      const QuarterConverter converter = QuarterConverter();
-      final q1 = DateTime(2020, 1, 1);
-
-      expect(converter.fromPgSql('2020q1'), equals(q1));
-      expect(converter.toPgSql(q1), '2020-01-01T00:00:00.000');
-    });
-
     test('Test error handling', () {
       const QuarterConverter converter = QuarterConverter();
 
@@ -73,16 +65,6 @@ void main() {
 
       expect(converter.fromJson(strings), equals(quarters));
       expect(converter.toJson(quarters), equals(strings));
-    });
-
-    test('Test PgSql methods', () {
-      const QuarterListConverter converter = QuarterListConverter();
-      final quarters = [DateTime(2020, 1, 1), DateTime(2020, 4, 1)];
-      final pgInputs = ['2020q1', '2020q2'];
-      final pgOutputs = ['2020-01-01T00:00:00.000', '2020-04-01T00:00:00.000'];
-
-      expect(converter.fromPgSql(pgInputs), equals(quarters));
-      expect(converter.toPgSql(quarters), equals(pgOutputs));
     });
   });
 }

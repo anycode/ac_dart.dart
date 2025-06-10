@@ -43,15 +43,6 @@ void main() {
 
       expect(converter.fromJson('invalid_range'), equals(DateRange(null, null)));
     });
-
-    test('Test PgSql methods', () {
-      const DateRangeConverter converter = DateRangeConverter();
-      final range = DateRange(DateTime(2020, 1, 1), DateTime(2020, 12, 31));
-      final text = '[2020-01-01,2020-12-31)';
-
-      expect(converter.fromPgSql(text), equals(range));
-      expect(converter.toPgSql(range), text);
-    });
   });
 
   group('Test DateRangesConverter', () {
@@ -64,18 +55,6 @@ void main() {
 
       expect(converter.fromJson(['[2020-01-01,2020-12-31)', '[2021-01-01,2021-12-31)']), equals(ranges));
       expect(converter.toJson(ranges), ['[2020-01-01,2020-12-31)', '[2021-01-01,2021-12-31)']);
-    });
-
-    test('Test PgSql methods', () {
-      const DateRangesConverter converter = DateRangesConverter();
-      final ranges = [
-        DateRange(DateTime(2020, 1, 1), DateTime(2020, 12, 31)),
-        DateRange(DateTime(2021, 1, 1), DateTime(2021, 12, 31))
-      ];
-      final texts = ['[2020-01-01,2020-12-31)', '[2021-01-01,2021-12-31)'];
-
-      expect(converter.fromPgSql(texts), equals(ranges));
-      expect(converter.toPgSql(ranges), texts);
     });
   });
 }
