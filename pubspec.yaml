@@ -1,5 +1,8 @@
 name: ac_dart
-description: AnyCode Dart services and extensions
+description: >-
+  Dart services, extensions, JSON convertors, formatting functions, loggers,
+  event bus and more utilities used across Anycode Dart projects.
+  Can be used by any Dart developer, who likes the things simple, no overkills.
 version: 0.1.26
 homepage: https://github.com/anycode/ac_dart.dart
 repository: https://github.com/anycode/ac_dart.dart
