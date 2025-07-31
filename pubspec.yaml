@@ -1,12 +1,12 @@
 name: ac_dart
 description: AnyCode Dart services and extensions
-version: 0.1.26
+version: 0.2.0
 homepage: https://github.com/anycode/ac_dart.dart
 repository: https://github.com/anycode/ac_dart.dart
 #publish_to: https://pub.dev
 
 environment:
-  sdk: ">=3.4.0 <4.0.0"
+  sdk: ">=3.8.0 <4.0.0"
 
 dependencies:
   ac_ranges: ^3.0.14
@@ -24,6 +24,7 @@ dependencies:
   pgsql_annotation:
     version: ^4.9.0-wip
     hosted: https://pub.anycode.dev
+  rxdart: ^0.28.0
   uuid: ^4.4.2
 
 dev_dependencies:
