@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:cross_file/cross_file.dart';
 import 'package:logger/logger.dart';
 import 'package:path/path.dart' as path;
+import 'package:rxdart/rxdart.dart';
+import 'package:synchronized/synchronized.dart';
 
 import 'ac_logger.dart';
 
@@ -31,6 +34,10 @@ class DebugLogger extends AcLogger {
   /// List of [MultiFileOutput] outputs
   /// All debug loggers with same name share the same output
   static final _fileOutputs = <String, MultiFileOutput>{};
+
+  /// List of [StreamOutput] outputs
+  /// All debug loggers with same name share the same stream output
+  static final _streamOutputs = <String, StreamOutput>{};
 
   /// Creates/returns a single logger with given [name]. Optionally, a [level], a multi file [output],
   /// a [filter] and a [printer] can be provided.
@@ -51,7 +58,8 @@ class DebugLogger extends AcLogger {
           id: id,
           level: level,
           output: MultiOutput([
-            _fileOutputs.putIfAbsent(name, () => output ?? MultiFileOutput(file: File('logs/$name.log'))),
+            _fileOutputs.putIfAbsent(name, () => output ?? MultiFileOutput(file: File('logs/$name.log'), maxSize: 100)),
+            _streamOutputs.putIfAbsent(name, () => StreamOutput()),
             ConsoleOutput(),
           ]),
           filter: filter,
@@ -79,7 +87,10 @@ class DebugLogger extends AcLogger {
           level: level,
           filter: filter,
           printer: printer,
-          output: _fileOutputs.putIfAbsent(name, () => output ?? MultiFileOutput(file: File('logs/$name.log'))),
+          output: MultiOutput([
+            _fileOutputs.putIfAbsent(name, () => output ?? MultiFileOutput(file: File('logs/$name.log'), maxSize: 100)),
+            _streamOutputs.putIfAbsent(name, () => StreamOutput()),
+          ]),
         ),
       );
 
@@ -93,18 +104,22 @@ class DebugLogger extends AcLogger {
     Level? level,
     LogFilter? filter,
     LogPrinter? printer,
-  }) =>
-      AcLogger.singleton(
-        name,
-        () => DebugLogger.instantiate(
-          name: name,
-          id: id,
-          level: level,
-          filter: filter,
-          printer: printer,
-          output: ConsoleOutput(),
-        ),
-      );
+  }) {
+    return AcLogger.singleton(
+      name,
+      () => DebugLogger.instantiate(
+        name: name,
+        id: id,
+        level: level,
+        filter: filter,
+        printer: printer,
+        output: MultiOutput([
+          ConsoleOutput(),
+          _streamOutputs.putIfAbsent(name, () => StreamOutput()),
+        ]),
+      ),
+    );
+  }
 
   /// Creates new instance of [DebugLogger]. Each call creates new instance, even if name is the same.
   /// If you need single instance, use [DebugLogger()] factory constructor.
@@ -124,7 +139,8 @@ class DebugLogger extends AcLogger {
   }) : super.instantiate(
           output: output ??
               MultiOutput([
-                _fileOutputs.putIfAbsent(name, () => MultiFileOutput(file: File('logs/$name.log'))),
+                _fileOutputs.putIfAbsent(name, () => MultiFileOutput(file: File('logs/$name.log'), maxSize: 100)),
+                _streamOutputs.putIfAbsent(name, () => StreamOutput()),
                 if (useConsoleOutput) ConsoleOutput(),
               ]),
           filter: filter ?? ProductionFilter(),
@@ -132,6 +148,11 @@ class DebugLogger extends AcLogger {
         );
 
   MultiFileOutput? get output => _fileOutputs[name];
+  Stream<String>? get stream => ConcatStream<String>([
+        ?_fileOutputs[name]?.stream,
+        ?_streamOutputs[name]?.stream.expand((line) => line),
+  ]);
+
 }
 
 /// Default [LogPrinter] for [DebugLogger]
@@ -177,6 +198,7 @@ class MultiFileOutput extends FileOutput {
   final int maxSize;
   final File file;
   final List<File> _files = [];
+  final Lock _rotationLock = Lock();
 
   MultiFileOutput({
     required this.file,
@@ -220,30 +242,40 @@ class MultiFileOutput extends FileOutput {
 
   @override
   void output(OutputEvent event) {
-    super.output(event);
+    _rotationLock.synchronized(() async {
+      super.output(event);
 
-    // rollover if needed
-    var fileSize = file.existsSync() ? file.lengthSync() : 0;
-    if (fileSize <= maxSize) {
-      return;
-    }
-    for (int i = maxFiles - 1; i > 0; i--) {
-      var fileA = _files[i];
-      var fileB = _files[i - 1];
-      if (fileA.existsSync()) {
-        fileA.deleteSync();
+      // rollover if needed
+      var fileSize = file.existsSync() ? file.lengthSync() : 0;
+      if (fileSize <= maxSize) {
+        return;
       }
-      if (fileB.existsSync()) {
-        fileB.renameSync(fileA.path);
+
+      for (int i = maxFiles - 1; i > 0; i--) {
+        var fileA = _files[i];
+        var fileB = _files[i - 1];
+        if (fileA.existsSync()) {
+          fileA.deleteSync();
+        }
+        if (fileB.existsSync()) {
+          fileB.renameSync(fileA.path);
+        }
       }
-    }
-    if (file.existsSync()) {
-      super.destroy();
-      file.deleteSync();
-    }
-    file.createSync();
-    super.init();
+      if (file.existsSync()) {
+        await super.destroy();
+        file.renameSync(_files[0].path);
+      }
+      file.createSync();
+      await super.init();
+    });
   }
 
-  Future<List<String>> get content async => await file.openRead().transform(utf8.decoder).transform(const LineSplitter()).toList();
+  Future<List<String>> get content => file.openRead().transform(utf8.decoder).transform(const LineSplitter()).toList();
+  Stream<String> get stream async* {
+    print("aaa");
+    yield* file.openRead().transform(utf8.decoder).transform(const LineSplitter()).map((line) {
+      print("file line: $line");
+      return line;
+    });
+  }
 }
