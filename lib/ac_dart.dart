@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-library dev.anycode.dart;
+library;
 
 export 'src/converter/date_range_converter.dart';
 export 'src/converter/date_time_converter.dart';
