@@ -16,7 +16,6 @@
 
 import 'package:ac_dart/ac_dart.dart';
 import 'package:test/test.dart';
-import 'package:hex/hex.dart';
 
 void main() {
   group('Test HexConverter', () {
