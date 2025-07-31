@@ -59,7 +59,7 @@ class NumericConverter implements PgSqlConverter<double, Object> {
 ///  e.g.
 ///  @JsonKey(name: 'dates')
 ///  @NumericConverter()
-///  List<Numeric> dates;
+///  List&lt;Numeric&gt; dates;
 ///
 class NumericListConverter implements PgSqlConverter<List<double>, List<Object>> {
   const NumericListConverter();

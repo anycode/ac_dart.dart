@@ -87,7 +87,7 @@ class QuarterConverter implements JsonConverter<DateTime, Object>, PgSqlConverte
 ///  e.g.
 ///  @JsonKey(name: 'dates')
 ///  @QuarterListConverter()
-///  List<DateTime> dates;
+///  List&lt;DateTime&gt; dates;
 ///
 class QuarterListConverter implements JsonConverter<List<DateTime>, List<Object>>, PgSqlConverter<List<DateTime>, List<Object>> {
   const QuarterListConverter();

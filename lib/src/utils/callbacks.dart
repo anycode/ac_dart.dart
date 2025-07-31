@@ -15,7 +15,7 @@
  */
 
 /// Callback function which takes one argument of type T.
-/// It has same signature as Flutter ValueChanged<T> or ValueSetter<T> callbacks
+/// It has same signature as Flutter ValueChanged&lt;T&gt; or ValueSetter&lt;T&gt; callbacks
 typedef AcValueCallback<T> = void Function(T value);
 
 /// Asynchronous callback function which takes one argument of type T and returns a Future
