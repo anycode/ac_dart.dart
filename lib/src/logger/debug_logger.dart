@@ -17,6 +17,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:cross_file/cross_file.dart';
 import 'package:logger/logger.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -59,10 +60,10 @@ class DebugLogger extends AcLogger {
     ),
   );
 
-  /// Creates/returns a single logger with given name. The output is only to files, not on console.
+  /// Creates/returns a single logger with given name. The output is only to files, not to console.
   /// Optionally, a [level], a [filter] and a [printer] can be provided.
   ///
-  /// If you need multiple instances, use [DebugLogger.instantiate(output: MultiFileOutput()] constructor.
+  /// If you need multiple instances, use [DebugLogger.instantiate(fileOutput: AdvancedFileOutput()] constructor.
   factory DebugLogger.files({
     required String name,
     String? id,
@@ -83,10 +84,10 @@ class DebugLogger extends AcLogger {
     ),
   );
 
-  /// Creates/returns a single logger with given name. The output is only on console, not to file(s).
+  /// Creates/returns a single logger with given name. The output is only to console, not to file(s).
   /// Optionally, a [level], a [filter] and a [printer] can be provided.
   ///
-  /// If you need multiple instances, use [DebugLogger.instantiate(output: ConsoleOutput())] constructor.
+  /// If you need multiple instances, use [DebugLogger.instantiate(useConsoleOutput: true)] constructor.
   factory DebugLogger.console({
     required String name,
     String? id,
@@ -111,10 +112,7 @@ class DebugLogger extends AcLogger {
   /// Creates new instance of [DebugLogger]. Each call creates new instance, even if name is the same.
   /// If you need single instance, use [DebugLogger()] factory constructor.
   ///
-  /// When [fileOutput] is not specified, [MultiOutput] is used by default, which will output to
-  /// files and to console. If you want to output to files only, and don't want to provide own [fileOutput],
-  /// set [useConsoleOutput] to false. If [fileOutput] is provided, value of [useConsoleOutput] is ignored
-  /// and it's caller's decision what the [fileOutput] is.
+  /// Output is to [fileOutput] (if specified) and to console (if [useConsoleOutput] is true).
   DebugLogger.instantiate({
     required super.name,
     String? id,
@@ -136,7 +134,7 @@ class DebugLogger extends AcLogger {
   AdvancedFileOutput? get output => _fileOutputs[name];
 
   Stream<String>? get stream => ConcatStream<String>([
-    //?_fileOutputs[name]?.stream,
+    ?_fileOutputs[name]?.stream,
     ?_streamOutputs[name]?.stream.expand((line) => line),
   ]);
 }
@@ -172,5 +170,19 @@ class DebugPrinter extends LogPrinter {
     } else {
       return finalMessage.toString();
     }
+  }
+}
+
+extension AdvancedFileOutputExt on AdvancedFileOutput {
+  List<XFile> get xFiles {
+    return getFiles().map((f) => XFile(f.path)).toList();
+  }
+
+  String get content {
+    return getFiles().map((f) => f.readAsStringSync()).join('\n');
+  }
+
+  Stream<String> get stream {
+    return getFile().readAsLines().then((lines) => lines.join('\n')).asStream();
   }
 }
