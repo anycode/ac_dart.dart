@@ -1,9 +1,9 @@
 name: ac_dart
 description: AnyCode Dart services and extensions
-version: 0.2.0
+version: 0.2.1
 homepage: https://github.com/anycode/ac_dart.dart
 repository: https://github.com/anycode/ac_dart.dart
-#publish_to: https://pub.anycode.dev
+publish_to: https://pub.anycode.dev
 
 environment:
   sdk: ">=3.8.0 <4.0.0"
