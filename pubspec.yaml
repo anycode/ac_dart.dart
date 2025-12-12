@@ -17,7 +17,9 @@ dependencies:
   intl: ^0.20.2
   json_annotation: ^4.9.0
   latlong2: ^0.9.1
-  logger: ^2.6.1
+  logger:
+    version: ^2.6.2
+    hosted: https://pub.anycode.dev
   logging: ^1.2.0
   meta: ^1.15.0
   path: ^1.9.0

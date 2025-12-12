@@ -4,3 +4,5 @@ dependency_overrides:
 #    git:
 #      url: https://github.com/anycode/ac_ranges.dart.git
 #      ref: v3.0.8
+#  logger:
+#    path: ../../../dart/lib/logger

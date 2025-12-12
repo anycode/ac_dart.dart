@@ -49,9 +49,10 @@ extension ContentTypeExt on ContentType {
       subType == 'pdf' ||
       subType == 'zip';
 
-  /// Test whether the content type is a text
-  // maybe too lose, possible should be more strict
-  bool get isText => ! isBinary;
+  bool get isText => primaryType == 'text' ||
+      primaryType == 'json' ||
+      subType == 'xml' ||
+      subType == 'json';
 
   bool equals(ContentType? other) {
     return primaryType == other?.primaryType &&
